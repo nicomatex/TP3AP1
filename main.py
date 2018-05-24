@@ -1,6 +1,4 @@
 def main()
 	'''
-	Recibe una pruebinsky
+	Este es un archivo de prueba
 	'''
-	return hola
-	print("Me gusta tu hermana preuba2")
