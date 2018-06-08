@@ -4,3 +4,6 @@ def main()
 	'''
 	while True:
 		print ("No Waifu No Laifu")
+
+
+print("Hola")
