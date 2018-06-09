@@ -10,6 +10,11 @@ RANGO_ARMA_HITS = (1,3)
 RANGO_ARMA_PRECISION = (1,50)
 RANGO_ARMA_TIEMPO_RECARGA = (1,2)
 
+RANGO_ESQUELETO_VELOCIDAD = (-4,10)
+RANGO_ESQUELETO_ENERGIA = (-4,10)
+RANGO_ESQUELETO_MOVILIDAD = (-4,10)
+ESQUELETO_SLOTS = 4
+
 CLASES_ARMA = ("GN Blade","Chaos Sword", "Frostmourne","Ashbringer","Elucidator","Daybreak")
 TIPOS_MUNICION = ("FISICA","LASER","HADRON")
 TIPOS_ARMA = ("MELEE","RANGO")
@@ -166,8 +171,10 @@ class Parte:
 		self.escudo_base = ESCUDO
 		self.velocidad_base = VELOCIDAD
 		self.energia_base = ENERGIA
-		self.armamento = []
 		self.tipo_parte = TIPO_PARTE
+
+		self.armamento = []
+		
 	def get_peso(self):
 		"""
 		Devuelve el peso total de la parte. 
