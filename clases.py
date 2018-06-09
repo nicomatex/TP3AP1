@@ -1,4 +1,3 @@
-arma
 import random
 
 RANGO_ARMA_PESO = (2,10)
@@ -230,4 +229,3 @@ class Parte:
 	def get_tipo_parte(self):
 		"""Devuelve una cadena que representa el tipo de parte."""
 		return self.tipo_parte
-master
