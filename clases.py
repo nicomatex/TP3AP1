@@ -10,6 +10,19 @@ RANGO_ARMA_HITS = (1,3)
 RANGO_ARMA_PRECISION = (1,50)
 RANGO_ARMA_TIEMPO_RECARGA = (1,2)
 
+RANGO_ESQUELETO_VELOCIDAD = (-4,10)
+RANGO_ESQUELETO_ENERGIA = (-4,10)
+RANGO_ESQUELETO_MOVILIDAD = (-4,10)
+ESQUELETO_SLOTS = 4
+
+RANGO_PARTE_PESO = (1,10)
+RANGO_PARTE_ARMADURA = (-4,10)
+RANGO_PARTE_ESCUDO = (-2,10)
+RANGO_PARTE_VELOCIDAD = (-2,10)
+RANGO_PARTE_ENERGIA = (2,20)
+
+TIPOS_PARTE = ("Backpack","Chestplate","Legplates","Boots","Helmet","Belt","Wrists")
+
 CLASES_ARMA = ("GN Blade","Chaos Sword", "Frostmourne","Ashbringer","Elucidator","Daybreak")
 TIPOS_MUNICION = ("FISICA","LASER","HADRON")
 TIPOS_ARMA = ("MELEE","RANGO")
@@ -138,10 +151,13 @@ class Esqueleto:
 	""" Represneta el esqueleto interno del Gunpla """
 
 	def __init__(self):
-		self.velocidad = VELOCIDAD
-		self.energia = ENERGIA
-		self.movilidad = MOVILIDAD
-		self.slots = SLOTS
+		'''
+		Inicializa un esqueleto con atributos aleatorios.
+		'''
+		self.velocidad = random.randint(RANGO_ESQUELETO_VELOCIDAD[0],RANGO_ESQUELETO_VELOCIDAD[1])
+		self.energia = random.randint(RANGO_ESQUELETO_ENERGIA[0],RANGO_ESQUELETO_ENERGIA[1])
+		self.movilidad = random.randint(RANGO_ESQUELETO_MOVILIDAD[0],RANGO_ESQUELETO_MOVILIDAD[1])
+		self.slots = ESQUELETO_SLOTS
 
 	def get_velocidad(self):
 		"""Devuelve la velocidad del esqueleto"""
@@ -160,22 +176,30 @@ class Esqueleto:
 
 class Parte:
 	"""Representa una parte del Gunpla"""
+
 	def __init__(self):
-		self.peso_base = PESOBASE
-		self.armadura_base = ARMADURA
-		self.escudo_base = ESCUDO
-		self.velocidad_base = VELOCIDAD
-		self.energia_base = ENERGIA
+		'''
+		Inicializa una parte con atributos aleatorios.\
+		'''
+		self.peso_base = random.randint(RANGO_PARTE_PESO[0],RANGO_PARTE_PESO[1])
+		self.armadura_base = random.randint(RANGO_PARTE_ARMADURA[0],RANGO_PARTE_ARMADURA[1])
+		self.escudo_base = random.randint(RANGO_PARTE_ESCUDO[0],RANGO_PARTE_ESCUDO[1])
+		self.velocidad_base = random.randint(RANGO_PARTE_VELOCIDAD[0],RANGO_PARTE_VELOCIDAD[1])
+		self.energia_base = random.randint(RANGO_PARTE_ENERGIA[0],RANGO_PARTE_ENERGIA[1])
+		self.tipo_parte = random.choice(TIPOS_PARTE)
+
 		self.armamento = []
-		self.tipo_parte = TIPO_PARTE
+		
 	def get_peso(self):
 		"""
 		Devuelve el peso total de la parte. 
 		Una parte pesa lo que pesa la sumatoria de sus armas más el peso base de la parte
 		"""
 		peso_total = self.peso_base
+
 		for arma in armamento:
 			peso_total += arma.get_peso()
+
 		return peso_total
 
 	def get_armadura(self):
@@ -185,8 +209,10 @@ class Parte:
 		más la armadura base de la parte
 		"""
 		armadura_total = self.armadura_base
+
 		for arma in armamento:
 			armadura_total += arma.get_armadura()
+
 		return armadura_total
 
 	def get_escudo(self):
@@ -196,8 +222,10 @@ class Parte:
 		armas más el escudo base de la parte 
 		"""
 		escudo_total = self.escudo_base
+
 		for arma in armamento:
 			escudo_total += arma.get_escudo()
+
 		return escudo_total
 
 	def get_velocidad(self):
@@ -218,8 +246,10 @@ class Parte:
 		armas más la energía base de la parte
 		"""
 		energia_total = self.energia_base
+
 		for arma in armamento:
 			energia_total += arma.get_energia()
+
 		return peso_total
 
 	def get_armamento(self):
