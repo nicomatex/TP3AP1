@@ -7,3 +7,5 @@ def main()
 
 
 print("Hola")
+
+prueba()
