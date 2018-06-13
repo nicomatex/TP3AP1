@@ -21,6 +21,8 @@ RANGO_PARTE_ESCUDO = (-2,10)
 RANGO_PARTE_VELOCIDAD = (-2,10)
 RANGO_PARTE_ENERGIA = (2,20)
 
+GUNPLA_SLOTS = 4
+
 TIPOS_PARTE = ("Backpack","Chestplate","Legplates","Boots","Helmet","Belt","Wrists")
 
 CLASES_ARMA = ("GN Blade","Chaos Sword", "Frostmourne","Ashbringer","Elucidator","Daybreak")
@@ -39,6 +41,127 @@ class Gunpla:
 		self.esqueleto = esqueleto 
 		self.partes = {}
 		self.armas = []
+		self.slots = GUNPLA_SLOTS
+		self.peso = 0
+		self.escudo = 0
+		self.velocidad = 0
+		self.energia = 0
+		self.energia_restante = self.energia
+
+	def get_peso(self):
+		'''
+		Devuelve el peso total del Gunpla. Un Gunpla pesa lo que pesa la sumatoria de sus partes y armas.
+		'''
+		peso = 0
+
+		for parte in self.partes.items():
+			peso+= parte.get_peso()
+
+		for arma in self.armas:
+			peso+= arma.get_peso()
+
+		return peso
+
+	def get_armadura(self):
+		'''
+		Devuelve la armadura total del Gunpla. Un Gunpla tiene tanta armadura como la sumatoria de la armadura de sus partes y armas.
+		'''
+
+		armadura = 0
+
+		for parte in self.partes.items():
+			armadura+= parte.get_armadura()
+
+		for arma in self.armas:
+			armadura+= arma.get_armadura()
+
+		return armadura
+
+	def get_escudo(self):
+		'''
+		Devuelve el escudo total del Gunpla. Un Gunpla tiene tanto escudo como la sumatoria del escudo de sus partes y armas.
+		'''
+
+		escudo = 0
+
+		for parte in self.partes.items():
+			escudo+= parte.get_escudo()
+
+		for arma in self.armas:
+			escudo+= arma.get_escudo()
+
+
+	def get_velocidad(self):
+		'''
+		Devuelve la velocidad total del Gunpla. Un Gunpla tiene tanta velocidad como 
+		la sumatoria de las velocidades de sus partes y esqueleto.
+		'''
+
+		velocidad = 0
+
+		for parte in self.partes.items():
+			velocidad+= parte.get_velocidad()
+
+		for arma in self.armas:
+			velocidad+= arma.get_velocidad()
+
+		velocidad+= self.esqueleto.get_velocidad()
+
+		return velocidad
+
+	def get_energia(self):
+		'''
+		Devuelve la energía total del Gunpla. Un Gunpla tiene tanta energía como
+		la sumatoria de la energía de sus partes, armas y esqueleto.
+		'''
+
+		energia = 0
+
+		for parte in self.partes.items():
+			energia+= parte.get_energia()
+
+		for arma in self.armas:
+			energia+= arma.get_energia()
+
+		energia+= self.esqueleto.get_energia()
+
+		return energia
+
+
+	def get_energia_restante(self):
+		'''
+		Devuelve la energía que le resta al Gunpla.
+		'''
+
+		return self.energia_restante
+
+	def get_movilidad(self):
+		'''
+		Devuelve la movilidad de un Gunpla. 
+		'''
+
+		base = self.esqueleto.get_movilidad()
+		peso = self.get_peso()
+		velocidad = self.get_velocidad()
+
+		return (base - (peso/2) + (velocidad *3)) / base 
+
+	def get_armamento(self):
+		'''
+		Devuelve una lista con todas las armas adosadas al Gunpla (Se incluyen las armas disponibles en las partes).
+		'''
+		armas = []
+
+		for arma in self.armas:
+			armas.append(arma)
+
+		for parte in self.partes.items():
+			for arma in parte.get_armamento():
+				armas.append(arma)
+
+		return armas
+
+
 
 class Arma:
 	'''
@@ -221,6 +344,7 @@ class Parte:
 		Una parte tiene tanto escudo como la sumatoria del escudo de sus 
 		armas más el escudo base de la parte 
 		"""
+
 		escudo_total = self.escudo_base
 
 		for arma in armamento:
@@ -230,11 +354,11 @@ class Parte:
 
 	def get_velocidad(self):
 		"""
-		Devuelve la velocidad total de la parte. 
-		Un Gunpla tiene tanta velocidad como la sumatoria de 
-		las velocidades de sus partes y esqueleto
+		Devuelve la velocidad total de la parte.
 		"""
+
 		velocidad_total = self.velocidad_base
+
 		for arma in armamento:
 			velodidad_total += arma.get_velocidad()
 		return peso_total
@@ -245,6 +369,7 @@ class Parte:
 		La parte tiene tanta energía como la sumatoria de la energía de sus 
 		armas más la energía base de la parte
 		"""
+
 		energia_total = self.energia_base
 
 		for arma in armamento:
@@ -254,7 +379,12 @@ class Parte:
 
 	def get_armamento(self):
 		"""Devuelve una lista con todas las armas adosadas a la parte"""
-		return self.armamento
+		armamento = []
+
+		for arma in self.armamento:
+			armamento.append(arma)
+
+		return armamento
 
 	def get_tipo_parte(self):
 		"""Devuelve una cadena que representa el tipo de parte."""
