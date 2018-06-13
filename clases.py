@@ -44,51 +44,29 @@ class Gunpla:
 		self.slots = GUNPLA_SLOTS
 		self.peso = 0
 		self.escudo = 0
-		self.velocidad = 0
-		self.energia = 0
+		self.velocidad = esqueleto.get_velocidad()
+		self.energia = esqueleto.get_energia()
 		self.energia_restante = self.energia
 
 	def get_peso(self):
 		'''
 		Devuelve el peso total del Gunpla. Un Gunpla pesa lo que pesa la sumatoria de sus partes y armas.
 		'''
-		peso = 0
-
-		for parte in self.partes.items():
-			peso+= parte.get_peso()
-
-		for arma in self.esqueleto.get_armamento():
-			peso+= arma.get_peso()
-
-		return peso
+		return self.peso
 
 	def get_armadura(self):
 		'''
 		Devuelve la armadura total del Gunpla. Un Gunpla tiene tanta armadura como la sumatoria de la armadura de sus partes y armas.
 		'''
 
-		armadura = 0
-
-		for parte in self.partes.items():
-			armadura+= parte.get_armadura()
-
-		for arma in self.esqueleto.get_armamento():
-			armadura+= arma.get_armadura()
-
-		return armadura
+		return self.armadura
 
 	def get_escudo(self):
 		'''
 		Devuelve el escudo total del Gunpla. Un Gunpla tiene tanto escudo como la sumatoria del escudo de sus partes y armas.
 		'''
 
-		escudo = 0
-
-		for parte in self.partes.items():
-			escudo+= parte.get_escudo()
-
-		for arma in self.esqueleto.get_armamento():
-			escudo+= arma.get_escudo()
+		return self.escudo
 
 
 	def get_velocidad(self):
@@ -97,17 +75,7 @@ class Gunpla:
 		la sumatoria de las velocidades de sus partes y esqueleto.
 		'''
 
-		velocidad = 0
-
-		for parte in self.partes.items():
-			velocidad+= parte.get_velocidad()
-
-		for arma in self.esqueleto.get_armamento():
-			velocidad+= arma.get_velocidad()
-
-		velocidad+= self.esqueleto.get_velocidad()
-
-		return velocidad
+		return self.velocidad
 
 	def get_energia(self):
 		'''
@@ -115,17 +83,7 @@ class Gunpla:
 		la sumatoria de la energía de sus partes, armas y esqueleto.
 		'''
 
-		energia = 0
-
-		for parte in self.partes.items():
-			energia+= parte.get_energia()
-
-		for arma in self.esqueleto.get_armamento():
-			energia+= arma.get_energia()
-
-		energia+= self.esqueleto.get_energia()
-
-		return energia
+		return self.energia
 
 
 	def get_energia_restante(self):
@@ -168,12 +126,24 @@ class Gunpla:
 
 		self.partes[parte.get_tipo_parte()]=parte
 
+		self.armadura+= parte.get_armadura()
+		self.energia+= parte.get_energia()
+		self.peso+= parte.get_peso()
+		self.escudo+= parte.get_escudo()
+		self.velocidad+= parte.get_velocidad()
+
 	def attach_arma(self,arma):
 		'''
 		Recibe un arma y si hay slots disponibles, se la adosa al gunpla. Caso contrario, levanta una excepcion.
 		'''
 
 		self.esqueleto.attach_arma(arma)
+
+		self.armadura+= arma.get_armadura()
+		self.energia+= arma.get_energia()
+		self.peso+= arma.get_peso()
+		self.escudo+= arma.get_escudo()
+		self.velocidad+= arma.get_velocidad()
 
 	def get_cantidad_slots(self):
 		'''
