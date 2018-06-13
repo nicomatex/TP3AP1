@@ -134,6 +134,14 @@ class Gunpla:
 		self.escudo+= parte.get_escudo()
 		self.velocidad+= parte.get_velocidad()
 
+		for arma in parte.get_armamento():
+			self.armadura+= arma.get_armadura()
+			self.energia+= arma.get_energia()
+			self.energia_restante+= arma.get_energia()
+			self.peso+= arma.get_peso()
+			self.escudo+= arma.get_escudo()
+			self.velocidad+= arma.get_velocidad()
+
 	def attach_arma(self,arma):
 		'''
 		Recibe un arma y si hay slots disponibles, se la adosa al gunpla. Caso contrario, levanta una excepcion.
@@ -321,7 +329,7 @@ class Parte:
 		self.peso_base = random.randint(RANGO_PARTE_PESO[0],RANGO_PARTE_PESO[1])
 		self.armadura_base = random.randint(RANGO_PARTE_ARMADURA[0],RANGO_PARTE_ARMADURA[1])
 		self.escudo_base = random.randint(RANGO_PARTE_ESCUDO[0],RANGO_PARTE_ESCUDO[1])
-		self.velocidad_base = random.randint(RANGO_PARTE_VELOCIDAD[0],RANGO_PARTE_VELOCIDAD[1])
+		self.velocidad = random.randint(RANGO_PARTE_VELOCIDAD[0],RANGO_PARTE_VELOCIDAD[1])
 		self.energia_base = random.randint(RANGO_PARTE_ENERGIA[0],RANGO_PARTE_ENERGIA[1])
 		self.tipo_parte = random.choice(TIPOS_PARTE)
 		self.slots = random.randint(RANGO_PARTE_SLOTS[0],RANGO_PARTE_SLOTS[1])
@@ -371,11 +379,7 @@ class Parte:
 		Devuelve la velocidad total de la parte.
 		"""
 
-		velocidad_total = self.velocidad_base
-
-		for arma in self.armamento:
-			velocidad_total += arma.get_velocidad()
-		return velocidad_total
+		return self.velocidad
 
 	def get_energia(self):
 		"""
