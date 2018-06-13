@@ -5,7 +5,7 @@ RANGO_ARMA_ARMADURA = (-5,20)
 RANGO_ARMA_ESCUDO = (-4,10)
 RANGO_ARMA_VELOCIDAD = (-4,10)
 RANGO_ARMA_ENERGIA = (-4,10)
-RANGO_ARMA_DANO = (5,20)
+RANGO_ARMA_DAÑO = (5,20)
 RANGO_ARMA_HITS = (1,3)
 RANGO_ARMA_PRECISION = (1,50)
 RANGO_ARMA_TIEMPO_RECARGA = (1,2)
@@ -178,7 +178,7 @@ class Arma:
 		self.tipo_municion = random.choice(TIPOS_MUNICION)
 		self.tipo = random.choice(TIPOS_ARMA)
 		self.clase = random.choice(CLASES_ARMA)
-		self.dano = random.randint(RANGO_ARMA_DANO[0],RANGO_ARMA_DANO[1])
+		self.daño = random.randint(RANGO_ARMA_DAÑO[0],RANGO_ARMA_DAÑO[1])
 		self.hits = random.randint(RANGO_ARMA_HITS[0],RANGO_ARMA_HITS[1])
 		self.precision = random.randint(RANGO_ARMA_PRECISION[0],RANGO_ARMA_PRECISION[1])
 		self.tiempo_recarga = random.randint(RANGO_ARMA_TIEMPO_RECARGA[0],RANGO_ARMA_TIEMPO_RECARGA[1])
@@ -233,11 +233,11 @@ class Arma:
 		'''
 		return self.clase
 
-	def get_dano(self):
+	def get_daño(self):
 		'''
 		Devuelve el dano del arma.			
 		'''
-		return self.dano
+		return self.daño
 
 	def get_hits(self):
 		'''
