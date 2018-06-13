@@ -77,6 +77,19 @@ class Gunpla:
 
 		return armadura
 
+	def get_escudo(self):
+		'''
+		Devuelve el escudo total del Gunpla. Un Gunpla tiene tanto escudo como la sumatoria del escudo de sus partes y armas.
+		'''
+
+		escudo = 0
+
+		for parte in partes.items():
+			escudo+= parte.get_escudo()
+
+		for arma in armas:
+			escudo+= arma.get_escudo()
+
 	
 
 class Arma:
