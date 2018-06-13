@@ -2,7 +2,8 @@ from clases import *
 from Pila import *
 
 CANTIDAD_ESQUELETOS = 3
-CANTIDAD_PARTES = 50
+CANTIDAD_PARTES = 20
+CANTIDAD_ARMAS = 20
 
 def generar_esqueletos():
 	'''
@@ -31,3 +32,15 @@ def generar_partes():
 		partes.apilar(parte)
 
 	return partes
+
+def generar_armas():
+	'''
+	Devuelve una pila con CANTIDAD_ARMAS de armas generadas aleatoriamente.
+	'''
+	armas = Pila()
+
+	for _ in range(CANTIDAD_ARMAS):
+		armas.apilar(Arma())
+
+	return armas
+
