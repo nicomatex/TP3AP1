@@ -176,6 +176,12 @@ class Gunpla:
 			raise ValueError("Ya no quedan slots disponibles.")
 
 		self.armas.append(arma)
+
+	def get_cantidad_slots(self):
+		'''
+		Devuelve la cantidad de slots disponibles para armas en el gunpla.
+		'''
+		return self.slots
 	
 class Arma:
 	'''
