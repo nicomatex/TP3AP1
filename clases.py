@@ -40,7 +40,6 @@ class Gunpla:
 		'''
 		self.esqueleto = esqueleto 
 		self.partes = {}
-		self.armas = []
 		self.slots = GUNPLA_SLOTS
 		self.peso = 0
 		self.escudo = 0
@@ -152,7 +151,7 @@ class Gunpla:
 		'''
 		armas = []
 
-		for arma in self.armas:
+		for arma in self.esqueleto.get_armamento():
 			armas.append(arma)
 
 		for parte in self.partes.items():
@@ -172,10 +171,10 @@ class Gunpla:
 		'''
 		Recibe un arma y si hay slots disponibles, se la adosa al gunpla. Caso contrario, levanta una excepcion.
 		'''
-		if len(self.armas)==self.slots:
+		if len(self.esqueleto.get_armamento())==self.esqueleto.get_cantidad_slots():
 			raise ValueError("Ya no quedan slots disponibles.")
 
-		self.armas.append(arma)
+		self.esqueleto.attach_arma(arma)
 
 	def get_cantidad_slots(self):
 		'''
@@ -301,6 +300,7 @@ class Esqueleto:
 		self.energia = random.randint(RANGO_ESQUELETO_ENERGIA[0],RANGO_ESQUELETO_ENERGIA[1])
 		self.movilidad = random.randint(RANGO_ESQUELETO_MOVILIDAD[0],RANGO_ESQUELETO_MOVILIDAD[1])
 		self.slots = ESQUELETO_SLOTS
+		self.armas = []
 
 	def get_velocidad(self):
 		"""Devuelve la velocidad del esqueleto"""
@@ -317,6 +317,18 @@ class Esqueleto:
 	def get_cantidad_slots(self):
 		"""Devuelve la cantidad de slots para armas que tiene el esqueleto"""
 		return self.slots
+
+
+	def get_armamento(self):
+		'''
+		Devuelve una lista con las armas del gunpla.
+		'''
+		armas = []
+		for arma in self.armas:
+			armas.append(arma)
+
+		return armas
+
 
 class Parte:
 	"""Representa una parte del Gunpla"""
