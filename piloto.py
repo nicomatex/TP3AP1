@@ -1,11 +1,15 @@
 from clases import *
 
+
 class Piloto:
 	'''
 	Inteligencia artificial para controlar un Gunpla.
 	'''
 
 	def __init__(self):
+		'''
+		Inicializa un piloto.
+		'''
 		self.gunpla = None
 
 	def set_gunpla(self,gunpla):
@@ -28,3 +32,15 @@ class Piloto:
 
 		return lista_esqueletos.index(lista_ordenada[0])
 
+	def elegir_parte(self,partes):
+		'''
+		Dado un diccionario: {tipo_parte:parte}, devuelve el tipo de parte que quiere elegir.
+		'''
+		parte_elegida = list(partes.keys())[0]
+
+		for parte in partes:
+
+			if partes[parte].get_energia() > partes[parte_elegida].get_energia():
+				parte_elegida = parte
+
+		return parte_elegida
