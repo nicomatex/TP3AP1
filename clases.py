@@ -114,7 +114,7 @@ class Gunpla:
 		for arma in self.esqueleto.get_armamento():
 			armas.append(arma)
 
-		for parte in self.partes.items():
+		for parte in self.partes.values():
 			for arma in parte.get_armamento():
 				armas.append(arma)
 
