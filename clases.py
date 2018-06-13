@@ -109,6 +109,32 @@ class Gunpla:
 
 		return velocidad
 
+	def get_energia(self):
+		'''
+		Devuelve la energía total del Gunpla. Un Gunpla tiene tanta energía como
+		la sumatoria de la energía de sus partes, armas y esqueleto.
+		'''
+
+		energia = 0
+
+		for parte in partes.items():
+			energia+= parte.get_energia()
+
+		for arma in armas:
+			energia+= arma.get_energia()
+
+		energia+= self.esqueleto.get_energia()
+
+		return energia
+
+
+	def get_energia_restante(self):
+		'''
+		Devuelve la energía que le resta al Gunpla.
+		'''
+
+		return self.energia_restante
+
 	
 class Arma:
 	'''
