@@ -21,6 +21,8 @@ RANGO_PARTE_ESCUDO = (-2,10)
 RANGO_PARTE_VELOCIDAD = (-2,10)
 RANGO_PARTE_ENERGIA = (2,20)
 
+GUNPLA_SLOTS = 4
+
 TIPOS_PARTE = ("Backpack","Chestplate","Legplates","Boots","Helmet","Belt","Wrists")
 
 CLASES_ARMA = ("GN Blade","Chaos Sword", "Frostmourne","Ashbringer","Elucidator","Daybreak")
@@ -39,7 +41,28 @@ class Gunpla:
 		self.esqueleto = esqueleto 
 		self.partes = {}
 		self.armas = []
+		self.slots = GUNPLA_SLOTS
+		self.peso = 0
+		self.escudo = 0
+		self.velocidad = 0
+		self.energia = 0
+		self.energia_restante = self.energia
 
+	def get_peso(self):
+		'''
+		Devuelve el peso total del Gunpla. Un Gunpla pesa lo que pesa la sumatoria de sus partes y armas.
+		'''
+		peso = 0
+
+		for parte in partes.items():
+			peso+= parte.get_peso()
+
+		for arma in armas:
+			peso+= arma.get_peso()
+
+		return peso
+
+	
 class Arma:
 	'''
 	Representa un arma.
