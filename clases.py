@@ -57,7 +57,7 @@ class Gunpla:
 		for parte in self.partes.items():
 			peso+= parte.get_peso()
 
-		for arma in self.armas:
+		for arma in self.esqueleto.get_armamento():
 			peso+= arma.get_peso()
 
 		return peso
@@ -87,7 +87,7 @@ class Gunpla:
 		for parte in self.partes.items():
 			escudo+= parte.get_escudo()
 
-		for arma in self.armas:
+		for arma in self.esqueleto.get_armamento():
 			escudo+= arma.get_escudo()
 
 
@@ -102,7 +102,7 @@ class Gunpla:
 		for parte in self.partes.items():
 			velocidad+= parte.get_velocidad()
 
-		for arma in self.armas:
+		for arma in self.esqueleto.get_armamento():
 			velocidad+= arma.get_velocidad()
 
 		velocidad+= self.esqueleto.get_velocidad()
@@ -120,7 +120,7 @@ class Gunpla:
 		for parte in self.partes.items():
 			energia+= parte.get_energia()
 
-		for arma in self.armas:
+		for arma in self.esqueleto.get_armamento():
 			energia+= arma.get_energia()
 
 		energia+= self.esqueleto.get_energia()
