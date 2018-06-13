@@ -72,7 +72,7 @@ class Gunpla:
 		for parte in self.partes.items():
 			armadura+= parte.get_armadura()
 
-		for arma in self.armas:
+		for arma in self.esqueleto.get_armamento():
 			armadura+= arma.get_armadura()
 
 		return armadura
@@ -204,89 +204,89 @@ class Arma:
 		self.esta_lista = True
 		self.tipo_parte = "Arma"
 
-		def get_peso(self):
-			'''
-			Devuelve el peso del arma.
-			'''
-			return self.peso
+	def get_peso(self):
+		'''
+		Devuelve el peso del arma.
+		'''
+		return self.peso
 
-		def get_armadura(self):
-			'''
-			Devuelve la armadura del arma.
-			'''
-			return self.armadura
+	def get_armadura(self):
+		'''
+		Devuelve la armadura del arma.
+		'''
+		return self.armadura
 
-		def get_escudo(self):
-			'''
-			Devuelve el escudo del arma.
-			'''
-			return self.escudo
+	def get_escudo(self):
+		'''
+		Devuelve el escudo del arma.
+		'''
+		return self.escudo
 
-		def get_velocidad(self):
-			'''
-			Devuelve la velocidad del arma.
-			'''
-			return self.velocidad
+	def get_velocidad(self):
+		'''
+		Devuelve la velocidad del arma.
+		'''
+		return self.velocidad
 
-		def get_energia(self):
-			'''
-			Devuelve la energia del arma.
-			'''
-			return self.energia
+	def get_energia(self):
+		'''
+		Devuelve la energia del arma.
+		'''
+		return self.energia
 
-		def get_tipo_municion(self):
-			'''
-			Devuelve el tipo de municion del arma.
-			'''
-			return self.tipo_municion
+	def get_tipo_municion(self):
+		'''
+		Devuelve el tipo de municion del arma.
+		'''
+		return self.tipo_municion
 
-		def get_tipo(self):
-			'''
-			Devuelve el tipo del arma.
-			'''
-			return self.tipo
+	def get_tipo(self):
+		'''
+		Devuelve el tipo del arma.
+		'''
+		return self.tipo
 
-		def get_clase(self):
-			'''
-			Devuelve la clase del arma.
-			'''
-			return self.clase
+	def get_clase(self):
+		'''
+		Devuelve la clase del arma.
+		'''
+		return self.clase
 
-		def get_dano(self):
-			'''
-			Devuelve el dano del arma.			
-			'''
-			return self.dano
+	def get_dano(self):
+		'''
+		Devuelve el dano del arma.			
+		'''
+		return self.dano
 
-		def get_hits(self):
-			'''
-			Devuelve la cantidad de veces que puede atacar un arma en un turno.
-			'''
-			return self.hits
+	def get_hits(self):
+		'''
+		Devuelve la cantidad de veces que puede atacar un arma en un turno.
+		'''
+		return self.hits
 
-		def get_precision(self):
-			'''
-			Devuelve la precision del arma.
-			'''
-			return self.precision
+	def get_precision(self):
+		'''
+		Devuelve la precision del arma.
+		'''
+		return self.precision
 
-		def get_tiempo_recarga(self):
-			'''
-			Devuelve la cantidad de turnos que tarda un arma en estar lista.
-			'''
-			return self.tiempo_recarga
+	def get_tiempo_recarga(self):
+		'''
+		Devuelve la cantidad de turnos que tarda un arma en estar lista.
+		'''
+		return self.tiempo_recarga
 
-		def esta_lista(self):
-			'''
-			Devuelve True si el arma es capaz de ser utilizada en este turno, caso contrario devuelve False.
-			'''
-			return self.esta_lista
+	def esta_lista(self):
+		'''
+		Devuelve True si el arma es capaz de ser utilizada en este turno, caso contrario devuelve False.
+		'''
+		return self.esta_lista
 
-		def get_tipo_parte(self):
-			'''
-			Devuelve el tipo de parte.
-			'''
-			return self.tipo_parte
+	def get_tipo_parte(self):
+		'''
+		Devuelve el tipo de parte.
+		'''
+		return self.tipo_parte
 
 class Esqueleto:
 	""" Represneta el esqueleto interno del Gunpla """
