@@ -62,7 +62,23 @@ class Gunpla:
 
 		return peso
 
+	def get_armadura(self):
+		'''
+		Devuelve la armadura total del Gunpla. Un Gunpla tiene tanta armadura como la sumatoria de la armadura de sus partes y armas.
+		'''
+
+		armadura = 0
+
+		for parte in partes.items():
+			armadura+= parte.get_armadura()
+
+		for arma in armas:
+			armadura+= arma.get_armadura()
+
+		return armadura
+
 	
+
 class Arma:
 	'''
 	Representa un arma.
