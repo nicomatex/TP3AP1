@@ -90,8 +90,26 @@ class Gunpla:
 		for arma in armas:
 			escudo+= arma.get_escudo()
 
-	
 
+	def get_velocidad(self):
+		'''
+		Devuelve la velocidad total del Gunpla. Un Gunpla tiene tanta velocidad como 
+		la sumatoria de las velocidades de sus partes y esqueleto.
+		'''
+
+		velocidad = 0
+
+		for parte in partes.items():
+			velocidad+= parte.get_velocidad()
+
+		for arma in armas:
+			velocidad+= arma.get_velocidad()
+
+		velocidad+= self.esqueleto.get_velocidad()
+
+		return velocidad
+
+	
 class Arma:
 	'''
 	Representa un arma.
@@ -273,6 +291,7 @@ class Parte:
 		Una parte tiene tanto escudo como la sumatoria del escudo de sus 
 		armas más el escudo base de la parte 
 		"""
+
 		escudo_total = self.escudo_base
 
 		for arma in armamento:
@@ -282,11 +301,11 @@ class Parte:
 
 	def get_velocidad(self):
 		"""
-		Devuelve la velocidad total de la parte. 
-		Un Gunpla tiene tanta velocidad como la sumatoria de 
-		las velocidades de sus partes y esqueleto
+		Devuelve la velocidad total de la parte.
 		"""
+
 		velocidad_total = self.velocidad_base
+
 		for arma in armamento:
 			velodidad_total += arma.get_velocidad()
 		return peso_total
@@ -297,6 +316,7 @@ class Parte:
 		La parte tiene tanta energía como la sumatoria de la energía de sus 
 		armas más la energía base de la parte
 		"""
+
 		energia_total = self.energia_base
 
 		for arma in armamento:
