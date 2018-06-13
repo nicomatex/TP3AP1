@@ -161,8 +161,22 @@ class Gunpla:
 
 		return armas
 
+	def attach_parte(self,parte):
+		'''
+		Recibe una parte y se la adosa al gunpla.
+		'''
 
+		self.partes[parte.get_tipo_parte()]=parte
 
+	def attach_arma(self,arma):
+		'''
+		Recibe un arma y si hay slots disponibles, se la adosa al gunpla. Caso contrario, levanta una excepcion.
+		'''
+		if len(self.armas)==self.slots:
+			raise ValueError("Ya no quedan slots disponibles.")
+
+		self.armas.append(arma)
+	
 class Arma:
 	'''
 	Representa un arma.
