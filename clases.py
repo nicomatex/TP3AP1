@@ -20,6 +20,7 @@ RANGO_PARTE_ARMADURA = (-4,10)
 RANGO_PARTE_ESCUDO = (-2,10)
 RANGO_PARTE_VELOCIDAD = (-2,10)
 RANGO_PARTE_ENERGIA = (2,20)
+RANGO_PARTE_SLOTS = (0,3)
 
 GUNPLA_SLOTS = 4
 
@@ -40,55 +41,33 @@ class Gunpla:
 		'''
 		self.esqueleto = esqueleto 
 		self.partes = {}
-		self.armas = []
 		self.slots = GUNPLA_SLOTS
 		self.peso = 0
 		self.escudo = 0
-		self.velocidad = 0
-		self.energia = 0
+		self.armadura = 0
+		self.velocidad = esqueleto.get_velocidad()
+		self.energia = esqueleto.get_energia()
 		self.energia_restante = self.energia
 
 	def get_peso(self):
 		'''
 		Devuelve el peso total del Gunpla. Un Gunpla pesa lo que pesa la sumatoria de sus partes y armas.
 		'''
-		peso = 0
-
-		for parte in self.partes.items():
-			peso+= parte.get_peso()
-
-		for arma in self.armas:
-			peso+= arma.get_peso()
-
-		return peso
+		return self.peso
 
 	def get_armadura(self):
 		'''
 		Devuelve la armadura total del Gunpla. Un Gunpla tiene tanta armadura como la sumatoria de la armadura de sus partes y armas.
 		'''
 
-		armadura = 0
-
-		for parte in self.partes.items():
-			armadura+= parte.get_armadura()
-
-		for arma in self.armas:
-			armadura+= arma.get_armadura()
-
-		return armadura
+		return self.armadura
 
 	def get_escudo(self):
 		'''
 		Devuelve el escudo total del Gunpla. Un Gunpla tiene tanto escudo como la sumatoria del escudo de sus partes y armas.
 		'''
 
-		escudo = 0
-
-		for parte in self.partes.items():
-			escudo+= parte.get_escudo()
-
-		for arma in self.armas:
-			escudo+= arma.get_escudo()
+		return self.escudo
 
 
 	def get_velocidad(self):
@@ -97,17 +76,7 @@ class Gunpla:
 		la sumatoria de las velocidades de sus partes y esqueleto.
 		'''
 
-		velocidad = 0
-
-		for parte in self.partes.items():
-			velocidad+= parte.get_velocidad()
-
-		for arma in self.armas:
-			velocidad+= arma.get_velocidad()
-
-		velocidad+= self.esqueleto.get_velocidad()
-
-		return velocidad
+		return self.velocidad
 
 	def get_energia(self):
 		'''
@@ -115,17 +84,7 @@ class Gunpla:
 		la sumatoria de la energía de sus partes, armas y esqueleto.
 		'''
 
-		energia = 0
-
-		for parte in self.partes.items():
-			energia+= parte.get_energia()
-
-		for arma in self.armas:
-			energia+= arma.get_energia()
-
-		energia+= self.esqueleto.get_energia()
-
-		return energia
+		return self.energia
 
 
 	def get_energia_restante(self):
@@ -152,7 +111,7 @@ class Gunpla:
 		'''
 		armas = []
 
-		for arma in self.armas:
+		for arma in self.esqueleto.get_armamento():
 			armas.append(arma)
 
 		for parte in self.partes.items():
@@ -161,7 +120,39 @@ class Gunpla:
 
 		return armas
 
+	def attach_parte(self,parte):
+		'''
+		Recibe una parte y se la adosa al gunpla.
+		'''
 
+		self.partes[parte.get_tipo_parte()]=parte
+
+		self.armadura+= parte.get_armadura()
+		self.energia+= parte.get_energia()
+		self.energia_restante+= parte.get_energia()
+		self.peso+= parte.get_peso()
+		self.escudo+= parte.get_escudo()
+		self.velocidad+= parte.get_velocidad()
+
+	def attach_arma(self,arma):
+		'''
+		Recibe un arma y si hay slots disponibles, se la adosa al gunpla. Caso contrario, levanta una excepcion.
+		'''
+
+		self.esqueleto.attach_arma(arma)
+
+		self.armadura+= arma.get_armadura()
+		self.energia+= arma.get_energia()
+		self.energia_restante+= arma.get_energia()
+		self.peso+= arma.get_peso()
+		self.escudo+= arma.get_escudo()
+		self.velocidad+= arma.get_velocidad()
+
+	def get_cantidad_slots(self):
+		'''
+		Devuelve la cantidad de slots disponibles para armas en el gunpla.
+		'''
+		return self.esqueleto.get_cantidad_slots()
 
 class Arma:
 	'''
@@ -186,89 +177,89 @@ class Arma:
 		self.esta_lista = True
 		self.tipo_parte = "Arma"
 
-		def get_peso(self):
-			'''
-			Devuelve el peso del arma.
-			'''
-			return self.peso
+	def get_peso(self):
+		'''
+		Devuelve el peso del arma.
+		'''
+		return self.peso
 
-		def get_armadura(self):
-			'''
-			Devuelve la armadura del arma.
-			'''
-			return self.armadura
+	def get_armadura(self):
+		'''
+		Devuelve la armadura del arma.
+		'''
+		return self.armadura
 
-		def get_escudo(self):
-			'''
-			Devuelve el escudo del arma.
-			'''
-			return self.escudo
+	def get_escudo(self):
+		'''
+		Devuelve el escudo del arma.
+		'''
+		return self.escudo
 
-		def get_velocidad(self):
-			'''
-			Devuelve la velocidad del arma.
-			'''
-			return self.velocidad
+	def get_velocidad(self):
+		'''
+		Devuelve la velocidad del arma.
+		'''
+		return self.velocidad
 
-		def get_energia(self):
-			'''
-			Devuelve la energia del arma.
-			'''
-			return self.energia
+	def get_energia(self):
+		'''
+		Devuelve la energia del arma.
+		'''
+		return self.energia
 
-		def get_tipo_municion(self):
-			'''
-			Devuelve el tipo de municion del arma.
-			'''
-			return self.tipo_municion
+	def get_tipo_municion(self):
+		'''
+		Devuelve el tipo de municion del arma.
+		'''
+		return self.tipo_municion
 
-		def get_tipo(self):
-			'''
-			Devuelve el tipo del arma.
-			'''
-			return self.tipo
+	def get_tipo(self):
+		'''
+		Devuelve el tipo del arma.
+		'''
+		return self.tipo
 
-		def get_clase(self):
-			'''
-			Devuelve la clase del arma.
-			'''
-			return self.clase
+	def get_clase(self):
+		'''
+		Devuelve la clase del arma.
+		'''
+		return self.clase
 
-		def get_dano(self):
-			'''
-			Devuelve el dano del arma.			
-			'''
-			return self.dano
+	def get_dano(self):
+		'''
+		Devuelve el dano del arma.			
+		'''
+		return self.dano
 
-		def get_hits(self):
-			'''
-			Devuelve la cantidad de veces que puede atacar un arma en un turno.
-			'''
-			return self.hits
+	def get_hits(self):
+		'''
+		Devuelve la cantidad de veces que puede atacar un arma en un turno.
+		'''
+		return self.hits
 
-		def get_precision(self):
-			'''
-			Devuelve la precision del arma.
-			'''
-			return self.precision
+	def get_precision(self):
+		'''
+		Devuelve la precision del arma.
+		'''
+		return self.precision
 
-		def get_tiempo_recarga(self):
-			'''
-			Devuelve la cantidad de turnos que tarda un arma en estar lista.
-			'''
-			return self.tiempo_recarga
+	def get_tiempo_recarga(self):
+		'''
+		Devuelve la cantidad de turnos que tarda un arma en estar lista.
+		'''
+		return self.tiempo_recarga
 
-		def esta_lista(self):
-			'''
-			Devuelve True si el arma es capaz de ser utilizada en este turno, caso contrario devuelve False.
-			'''
-			return self.esta_lista
+	def esta_lista(self):
+		'''
+		Devuelve True si el arma es capaz de ser utilizada en este turno, caso contrario devuelve False.
+		'''
+		return self.esta_lista
 
-		def get_tipo_parte(self):
-			'''
-			Devuelve el tipo de parte.
-			'''
-			return self.tipo_parte
+	def get_tipo_parte(self):
+		'''
+		Devuelve el tipo de parte.
+		'''
+		return self.tipo_parte
 
 class Esqueleto:
 	""" Represneta el esqueleto interno del Gunpla """
@@ -281,6 +272,7 @@ class Esqueleto:
 		self.energia = random.randint(RANGO_ESQUELETO_ENERGIA[0],RANGO_ESQUELETO_ENERGIA[1])
 		self.movilidad = random.randint(RANGO_ESQUELETO_MOVILIDAD[0],RANGO_ESQUELETO_MOVILIDAD[1])
 		self.slots = ESQUELETO_SLOTS
+		self.armas = []
 
 	def get_velocidad(self):
 		"""Devuelve la velocidad del esqueleto"""
@@ -296,6 +288,28 @@ class Esqueleto:
 
 	def get_cantidad_slots(self):
 		"""Devuelve la cantidad de slots para armas que tiene el esqueleto"""
+		return self.slots
+
+
+	def get_armamento(self):
+		'''
+		Devuelve una lista con las armas del gunpla.
+		'''
+		armas = []
+		for arma in self.armas:
+			armas.append(arma)
+
+		return armas
+ 
+	def attach_arma(self,arma):
+		'''
+		Recibe un arma y, si quedan slots disponibles, se la adosa al esqueleto.
+		'''
+
+		if len(self.armas)==self.slots:
+			raise ValueError("Ya no hay slots disponibles.")
+
+		self.armas.append(arma)
 
 class Parte:
 	"""Representa una parte del Gunpla"""
@@ -310,7 +324,7 @@ class Parte:
 		self.velocidad_base = random.randint(RANGO_PARTE_VELOCIDAD[0],RANGO_PARTE_VELOCIDAD[1])
 		self.energia_base = random.randint(RANGO_PARTE_ENERGIA[0],RANGO_PARTE_ENERGIA[1])
 		self.tipo_parte = random.choice(TIPOS_PARTE)
-
+		self.slots = random.randint(RANGO_PARTE_SLOTS[0],RANGO_PARTE_SLOTS[1])
 		self.armamento = []
 		
 	def get_peso(self):
@@ -320,7 +334,7 @@ class Parte:
 		"""
 		peso_total = self.peso_base
 
-		for arma in armamento:
+		for arma in self.armamento:
 			peso_total += arma.get_peso()
 
 		return peso_total
@@ -333,7 +347,7 @@ class Parte:
 		"""
 		armadura_total = self.armadura_base
 
-		for arma in armamento:
+		for arma in self.armamento:
 			armadura_total += arma.get_armadura()
 
 		return armadura_total
@@ -347,7 +361,7 @@ class Parte:
 
 		escudo_total = self.escudo_base
 
-		for arma in armamento:
+		for arma in self.armamento:
 			escudo_total += arma.get_escudo()
 
 		return escudo_total
@@ -359,9 +373,9 @@ class Parte:
 
 		velocidad_total = self.velocidad_base
 
-		for arma in armamento:
-			velodidad_total += arma.get_velocidad()
-		return peso_total
+		for arma in self.armamento:
+			velocidad_total += arma.get_velocidad()
+		return velocidad_total
 
 	def get_energia(self):
 		"""
@@ -372,10 +386,10 @@ class Parte:
 
 		energia_total = self.energia_base
 
-		for arma in armamento:
+		for arma in self.armamento:
 			energia_total += arma.get_energia()
 
-		return peso_total
+		return energia_total
 
 	def get_armamento(self):
 		"""Devuelve una lista con todas las armas adosadas a la parte"""
@@ -389,3 +403,19 @@ class Parte:
 	def get_tipo_parte(self):
 		"""Devuelve una cadena que representa el tipo de parte."""
 		return self.tipo_parte
+
+	def get_cantidad_slots(self):
+		'''
+		Devuelve la cantidad de slots disponibles para adosar armas en la parte.
+		'''
+		return self.slots
+
+	def attach_arma(self,arma):
+		'''
+		Si hay espacio disponible, le adosa un arma al gunpla. Caso contrario, levanta una excepcion.
+		'''
+
+		if len(self.armamento)==self.slots:
+			raise ValueError("Esta parte no tiene mas slots disponibles para armas.")
+
+		self.armamento.append(arma)
