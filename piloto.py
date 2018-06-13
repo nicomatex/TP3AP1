@@ -11,6 +11,7 @@ class Piloto:
 		Inicializa un piloto.
 		'''
 		self.gunpla = None
+		self.tipo_partes_elegidas = []
 
 	def set_gunpla(self,gunpla):
 		'''
@@ -44,3 +45,15 @@ class Piloto:
 				parte_elegida = parte
 
 		return parte_elegida
+
+	def elegir_combinacion(self,partes_reservadas):
+		'''
+		Dada una lista con partes previamente reservadas, devuelve una lista con las partes a utilizar para construir el Gunpla. 
+		'''
+		partes_elegidas = []
+
+		for parte in partes_reservadas:
+			if parte.get_tipo_parte() not in [p.get_tipo_parte() for p in partes_elegidas]:
+				partes_elegidas.append(parte)
+				
+		return partes_elegidas
