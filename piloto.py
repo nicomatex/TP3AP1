@@ -1,4 +1,5 @@
 from clases import *
+from main import *
 
 TIPO_MUNICION_LASER = "LASER"
 TIPO_MUNICION_FISICA = "FISICA"
@@ -77,7 +78,7 @@ class Piloto:
 		'''
 		Devuelve el arma con la cual se decide atacar al oponente.
 		'''
-		armas_disponibles = [arma for arma in self.gunpla.get_armamento() if arma.esta_lista()]
+		armas_disponibles = [arma for arma in self.gunpla.get_armamento() if lambda arma: arma.esta_lista()]
 
 		armas_hadron = [arma for arma in armas_disponibles if arma.get_tipo_municion()==TIPO_MUNICION_HADRON]
 		armas_fisicas = [arma for arma in armas_disponibles if arma.get_tipo_municion()==TIPO_MUNICION_FISICA]
