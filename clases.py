@@ -144,9 +144,9 @@ class Gunpla:
 		peso = self.get_peso()
 		velocidad = self.get_velocidad()
 
-		return (base - peso/2 + velocidad *3)
+		return (base - (peso/2) + (velocidad *3)) / base 
+		
 
-	
 class Arma:
 	'''
 	Representa un arma.
