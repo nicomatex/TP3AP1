@@ -135,6 +135,17 @@ class Gunpla:
 
 		return self.energia_restante
 
+	def get_movilidad(self):
+		'''
+		Devuelve la movilidad de un Gunpla. 
+		'''
+
+		base = self.esqueleto.get_movilidad()
+		peso = self.get_peso()
+		velocidad = self.get_velocidad()
+
+		return (base - peso/2 + velocidad *3)
+
 	
 class Arma:
 	'''
