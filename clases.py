@@ -182,7 +182,7 @@ class Gunpla:
 		Devuelve la cantidad de slots disponibles para armas en el gunpla.
 		'''
 		return self.slots
-	
+
 class Arma:
 	'''
 	Representa un arma.
@@ -316,6 +316,7 @@ class Esqueleto:
 
 	def get_cantidad_slots(self):
 		"""Devuelve la cantidad de slots para armas que tiene el esqueleto"""
+		return self.slots
 
 class Parte:
 	"""Representa una parte del Gunpla"""
