@@ -44,6 +44,7 @@ class Gunpla:
 		self.slots = GUNPLA_SLOTS
 		self.peso = 0
 		self.escudo = 0
+		self.armadura = 0
 		self.velocidad = esqueleto.get_velocidad()
 		self.energia = esqueleto.get_energia()
 		self.energia_restante = self.energia
@@ -128,6 +129,7 @@ class Gunpla:
 
 		self.armadura+= parte.get_armadura()
 		self.energia+= parte.get_energia()
+		self.energia_restante+= parte.get_energia()
 		self.peso+= parte.get_peso()
 		self.escudo+= parte.get_escudo()
 		self.velocidad+= parte.get_velocidad()
@@ -141,6 +143,7 @@ class Gunpla:
 
 		self.armadura+= arma.get_armadura()
 		self.energia+= arma.get_energia()
+		self.energia_restante+= arma.get_energia()
 		self.peso+= arma.get_peso()
 		self.escudo+= arma.get_escudo()
 		self.velocidad+= arma.get_velocidad()
@@ -321,7 +324,7 @@ class Parte:
 		self.velocidad_base = random.randint(RANGO_PARTE_VELOCIDAD[0],RANGO_PARTE_VELOCIDAD[1])
 		self.energia_base = random.randint(RANGO_PARTE_ENERGIA[0],RANGO_PARTE_ENERGIA[1])
 		self.tipo_parte = random.choice(TIPOS_PARTE)
-		self.slots = random.randint(RANGO_PARTE_SLOTS[0],RANGO_PARTE,SLOTS[1])
+		self.slots = random.randint(RANGO_PARTE_SLOTS[0],RANGO_PARTE_SLOTS[1])
 		self.armamento = []
 		
 	def get_peso(self):
@@ -331,7 +334,7 @@ class Parte:
 		"""
 		peso_total = self.peso_base
 
-		for arma in armamento:
+		for arma in self.armamento:
 			peso_total += arma.get_peso()
 
 		return peso_total
@@ -344,7 +347,7 @@ class Parte:
 		"""
 		armadura_total = self.armadura_base
 
-		for arma in armamento:
+		for arma in self.armamento:
 			armadura_total += arma.get_armadura()
 
 		return armadura_total
@@ -358,7 +361,7 @@ class Parte:
 
 		escudo_total = self.escudo_base
 
-		for arma in armamento:
+		for arma in self.armamento:
 			escudo_total += arma.get_escudo()
 
 		return escudo_total
@@ -370,9 +373,9 @@ class Parte:
 
 		velocidad_total = self.velocidad_base
 
-		for arma in armamento:
-			velodidad_total += arma.get_velocidad()
-		return peso_total
+		for arma in self.armamento:
+			velocidad_total += arma.get_velocidad()
+		return velocidad_total
 
 	def get_energia(self):
 		"""
@@ -383,10 +386,10 @@ class Parte:
 
 		energia_total = self.energia_base
 
-		for arma in armamento:
+		for arma in self.armamento:
 			energia_total += arma.get_energia()
 
-		return peso_total
+		return energia_total
 
 	def get_armamento(self):
 		"""Devuelve una lista con todas las armas adosadas a la parte"""
@@ -405,7 +408,7 @@ class Parte:
 		'''
 		Devuelve la cantidad de slots disponibles para adosar armas en la parte.
 		'''
-		return self.slo
+		return self.slots
 
 	def attach_arma(self,arma):
 		'''
