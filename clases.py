@@ -54,10 +54,10 @@ class Gunpla:
 		'''
 		peso = 0
 
-		for parte in partes.items():
+		for parte in self.partes.items():
 			peso+= parte.get_peso()
 
-		for arma in armas:
+		for arma in self.armas:
 			peso+= arma.get_peso()
 
 		return peso
@@ -69,10 +69,10 @@ class Gunpla:
 
 		armadura = 0
 
-		for parte in partes.items():
+		for parte in self.partes.items():
 			armadura+= parte.get_armadura()
 
-		for arma in armas:
+		for arma in self.armas:
 			armadura+= arma.get_armadura()
 
 		return armadura
@@ -84,10 +84,10 @@ class Gunpla:
 
 		escudo = 0
 
-		for parte in partes.items():
+		for parte in self.partes.items():
 			escudo+= parte.get_escudo()
 
-		for arma in armas:
+		for arma in self.armas:
 			escudo+= arma.get_escudo()
 
 
@@ -99,10 +99,10 @@ class Gunpla:
 
 		velocidad = 0
 
-		for parte in partes.items():
+		for parte in self.partes.items():
 			velocidad+= parte.get_velocidad()
 
-		for arma in armas:
+		for arma in self.armas:
 			velocidad+= arma.get_velocidad()
 
 		velocidad+= self.esqueleto.get_velocidad()
@@ -117,10 +117,10 @@ class Gunpla:
 
 		energia = 0
 
-		for parte in partes.items():
+		for parte in self.partes.items():
 			energia+= parte.get_energia()
 
-		for arma in armas:
+		for arma in self.armas:
 			energia+= arma.get_energia()
 
 		energia+= self.esqueleto.get_energia()
@@ -145,7 +145,23 @@ class Gunpla:
 		velocidad = self.get_velocidad()
 
 		return (base - (peso/2) + (velocidad *3)) / base 
-		
+
+	def get_armamento(self):
+		'''
+		Devuelve una lista con todas las armas adosadas al Gunpla (Se incluyen las armas disponibles en las partes).
+		'''
+		armas = []
+
+		for arma in self.armas:
+			armas.append(arma)
+
+		for parte in self.partes.items():
+			for arma in parte.get_armamento():
+				armas.append(arma)
+
+		return armas
+
+
 
 class Arma:
 	'''
@@ -363,7 +379,12 @@ class Parte:
 
 	def get_armamento(self):
 		"""Devuelve una lista con todas las armas adosadas a la parte"""
-		return self.armamento
+		armamento = []
+
+		for arma in self.armamento:
+			armamento.append(arma)
+
+		return armamento
 
 	def get_tipo_parte(self):
 		"""Devuelve una cadena que representa el tipo de parte."""
