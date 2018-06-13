@@ -20,6 +20,7 @@ RANGO_PARTE_ARMADURA = (-4,10)
 RANGO_PARTE_ESCUDO = (-2,10)
 RANGO_PARTE_VELOCIDAD = (-2,10)
 RANGO_PARTE_ENERGIA = (2,20)
+RANGO_PARTE_SLOTS = (0,3)
 
 GUNPLA_SLOTS = 4
 
@@ -171,8 +172,6 @@ class Gunpla:
 		'''
 		Recibe un arma y si hay slots disponibles, se la adosa al gunpla. Caso contrario, levanta una excepcion.
 		'''
-		if len(self.esqueleto.get_armamento())==self.esqueleto.get_cantidad_slots():
-			raise ValueError("Ya no quedan slots disponibles.")
 
 		self.esqueleto.attach_arma(arma)
 
@@ -180,7 +179,7 @@ class Gunpla:
 		'''
 		Devuelve la cantidad de slots disponibles para armas en el gunpla.
 		'''
-		return self.slots
+		return self.esqueleto.get_cantidad_slots()
 
 class Arma:
 	'''
@@ -328,7 +327,16 @@ class Esqueleto:
 			armas.append(arma)
 
 		return armas
+ 
+	def attach_arma(self,arma):
+		'''
+		Recibe un arma y, si quedan slots disponibles, se la adosa al esqueleto.
+		'''
 
+		if len(self.armas)==self.slots:
+			raise ValueError("Ya no hay slots disponibles.")
+
+		self.armas.append(arma)
 
 class Parte:
 	"""Representa una parte del Gunpla"""
@@ -343,7 +351,7 @@ class Parte:
 		self.velocidad_base = random.randint(RANGO_PARTE_VELOCIDAD[0],RANGO_PARTE_VELOCIDAD[1])
 		self.energia_base = random.randint(RANGO_PARTE_ENERGIA[0],RANGO_PARTE_ENERGIA[1])
 		self.tipo_parte = random.choice(TIPOS_PARTE)
-
+		self.slots = random.randint(RANGO_PARTE_SLOTS[0],RANGO_PARTE,SLOTS[1])
 		self.armamento = []
 		
 	def get_peso(self):
@@ -422,3 +430,19 @@ class Parte:
 	def get_tipo_parte(self):
 		"""Devuelve una cadena que representa el tipo de parte."""
 		return self.tipo_parte
+
+	def get_cantidad_slots(self):
+		'''
+		Devuelve la cantidad de slots disponibles para adosar armas en la parte.
+		'''
+		return self.slo
+
+	def attach_arma(self,arma):
+		'''
+		Si hay espacio disponible, le adosa un arma al gunpla. Caso contrario, levanta una excepcion.
+		'''
+
+		if len(self.armamento)==self.slots:
+			raise ValueError("Esta parte no tiene mas slots disponibles para armas.")
+
+		self.armamento.append(arma)
