@@ -55,5 +55,17 @@ class Piloto:
 		for parte in partes_reservadas:
 			if parte.get_tipo_parte() not in [p.get_tipo_parte() for p in partes_elegidas]:
 				partes_elegidas.append(parte)
-				
+
 		return partes_elegidas
+
+	def elegir_oponente(self,oponentes):
+		'''
+		Devuelve el índice del Gunpla al cual se decide atacar de la lista de oponentes pasada.
+		'''
+		oponente_elegido = oponentes[0]
+
+		for oponente in oponentes:
+			if oponente.get_energia_restante()<oponente_elegido.get_energia_restante():
+				oponente_elegido = oponente
+
+		return oponentes.index(oponente_elegido)
