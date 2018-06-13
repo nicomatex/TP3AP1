@@ -1,5 +1,8 @@
 from clases import *
 
+TIPO_MUNICION_LASER = "LASER"
+TIPO_MUNICION_FISICA = "FISICA"
+TIPO_MUNICION_HADRON = "HADRON"
 
 class Piloto:
 	'''
@@ -69,3 +72,42 @@ class Piloto:
 				oponente_elegido = oponente
 
 		return oponentes.index(oponente_elegido)
+
+	def elegir_arma(self,oponente):
+		'''
+		Devuelve el arma con la cual se decide atacar al oponente.
+		'''
+		armas_disponibles = [arma for arma in self.gunpla.get_armamento() if arma.esta_lista()]
+
+		armas_hadron = [arma for arma in armas_disponibles if arma.get_tipo_municion()==TIPO_MUNICION_HADRON]
+		armas_fisicas = [arma for arma in armas_disponibles if arma.get_tipo_municion()==TIPO_MUNICION_FISICA]
+		armas_laser = [arma for arma in armas_disponibles if arma.get_tipo_municion()==TIPO_MUNICION_LASER]
+
+
+		#Elige , en lo posible, un arma de hadron
+		if any(armas_hadron):
+			arma_elegida=armas_hadron[0]
+
+			for arma in armas_hadron:
+				if arma.get_daño()>arma_elegida.get_daño():
+					arma_elegida = arma
+
+			return arma
+
+		#Decide si el oponente tiene menos escudo o armadura.
+		if (oponente.get_escudo()<oponente.get_armadura() or not any(armas_fisicas)) and any(armas_laser):
+			arma_elegida=armas_laser[0]
+
+			for arma in armas_laser:
+				if arma.get_daño()>arma_elegida.get_daño():
+					arma_elegida = arma
+
+			return arma
+
+		arma_elegida=armas_fisicas[0]
+
+		for arma in armas_fisicas:
+			if arma.get_daño()>arma_elegida.get_daño():
+				arma_elegida = arma
+
+		return arma
