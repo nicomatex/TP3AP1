@@ -18,9 +18,9 @@ def generar_esqueletos():
 
 def generar_partes():
 	'''
-	Devuelve una pila con CANTIDAD_PARTES de partes generadas de forma aleatoria, con sus respectivas armas equipadas.
+	Devuelve un diccionario cuyas claves son los tipos de partes disponibles y sus valores son pilas de partes de dicho tipo.
 	'''
-	partes = Pila()
+	partes = {}
 
 	for _ in range(CANTIDAD_PARTES):
 		parte = Parte()
@@ -29,18 +29,15 @@ def generar_partes():
 		for _ in range(parte.get_cantidad_slots()):
 			parte.attach_arma(Arma())
 
-		partes.apilar(parte)
 
-	return partes
+		pila_tipo = partes.get(parte.get_tipo_parte(),Pila())
+		pila_tipo.apilar(parte)
+		partes[parte.get_tipo_parte()]=pila_tipo
 
-def generar_armas():
-	'''
-	Devuelve una pila con CANTIDAD_ARMAS de armas generadas aleatoriamente.
-	'''
-	armas = Pila()
+	#Se generan las armas
+	partes['Arma']= Pila()
 
 	for _ in range(CANTIDAD_ARMAS):
-		armas.apilar(Arma())
+		partes['Arma'].apilar(Arma())
 
-	return armas
-
+	return partes
