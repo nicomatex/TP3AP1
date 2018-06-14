@@ -20,7 +20,7 @@ def generar_partes():
 	'''
 	Devuelve una pila con CANTIDAD_PARTES de partes generadas de forma aleatoria, con sus respectivas armas equipadas.
 	'''
-	partes = Pila()
+	partes = {}
 
 	for _ in range(CANTIDAD_PARTES):
 		parte = Parte()
@@ -29,7 +29,10 @@ def generar_partes():
 		for _ in range(parte.get_cantidad_slots()):
 			parte.attach_arma(Arma())
 
-		partes.apilar(parte)
+
+		pila_tipo = partes.get(parte.get_tipo_parte(),Pila())
+		pila_tipo.apilar(parte)
+		partes[parte.get_tipo_parte()]=pila_tipo
 
 	return partes
 
