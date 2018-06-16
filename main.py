@@ -73,31 +73,38 @@ def elegir_esqueletos(pilotos,esqueletos):
 def elegir_partes(partes,pilotos):
 	'''
 	Recibe un diccionario partes de la forma <tipo_parte:pila con partes de ese tipo> y una lista de 
-	pilotos, y le permite a los 
-	pilotos reservar partes de cada una de las pilas.
+	tuplas de la forma <numero de piloto,piloto>
+	pilotos, y devuelve un diccionario de la forma
+	{(numero de piloto, piloto):[Lista de partes reservadas por el piloto]}
 	'''
 
 	partes_reservadas = {piloto:[] for piloto in pilotos}
 
-	todas_vacias = False
-
 	piloto_eligiendo = 0
 
-	while not todas_vacias:
+	todas_vacias = False
+
+	while True:
 
 		todas_vacias = True
-
-		for pila_partes in partes.values():
-			if not pila_partes.esta_vacia():
+		for tipo_parte in partes:
+			if not partes[tipo_parte].esta_vacia():
 				todas_vacias = False
+
+		#Condicion de corte: Que esten todas las pilas vacias.
+		if todas_vacias:
+			break
 
 		elector = pilotos[piloto_eligiendo]
 		tipo_parte_elegida = elector[1].elegir_parte(partes)
 		partes_reservadas[elector].append(partes[tipo_parte_elegida].desapilar())
 
+		if partes[tipo_parte_elegida].esta_vacia():
+			partes.pop(tipo_parte_elegida)
+
 		piloto_eligiendo+=1
 
-		if piloto_eligiendo>len(pilotos):
+		if piloto_eligiendo>len(pilotos)-1:
 			piloto_eligiendo=0
 
 	return partes_reservadas
