@@ -1,11 +1,12 @@
 from clases import *
 from Pila import *
+from Cola import *
 from piloto import *
 
 CANTIDAD_ESQUELETOS = 10
 CANTIDAD_PARTES = 20
 CANTIDAD_ARMAS = 20
-CANTIDAD_PILOTOS = 2
+CANTIDAD_PILOTOS = 5
 
 def generar_esqueletos():
 	'''
@@ -13,7 +14,7 @@ def generar_esqueletos():
 	'''
 	esqueletos = []
 
-	for i in range(CANTIDAD_ESQUELETOS):
+	for _ in range(CANTIDAD_ESQUELETOS):
 		esqueletos.append(Esqueleto())
 
 	return esqueletos
@@ -63,7 +64,8 @@ def elegir_esqueletos(pilotos,esqueletos):
 	'''
 	
 	#
-	pilotos.shuffle()
+	random.shuffle(pilotos)
+
 	for _,piloto in pilotos:
 		indice_esqueleto_elegido = piloto.elegir_esqueleto(esqueletos)
 
@@ -108,3 +110,57 @@ def elegir_partes(partes,pilotos):
 			piloto_eligiendo=0
 
 	return partes_reservadas
+
+def equipar_gunplas(partes_reservadas):
+	'''
+	Recibe un diccionario de la forma {(numero de piloto,piloto):[lista de partes elegidas]}
+	y equipa el gunpla de cada piloto 
+	con las partes elegidas de entre las partes reservadas. No devuelve nada.
+	'''
+
+	for piloto in partes_reservadas:
+
+		partes_seleccionadas = piloto[1].elegir_combinacion(partes_reservadas[piloto])
+
+		for parte in partes_seleccionadas:
+			if parte.get_tipo_parte()=="Arma":
+				piloto[1].get_gunpla().attach_arma(parte)
+			else:
+				piloto[1].get_gunpla().attach_parte(parte)
+
+def ordenar_pilotos(pilotos):
+	'''
+	Recibe una lista de tuplas de la forma <numero de piloto,piloto> y devuelve 
+	una lista de los pilotos ordenados segun la velocidad de sus gunplas.
+	'''
+
+	lista_resultado = sorted(pilotos, key = lambda piloto: piloto[1].get_gunpla().get_velocidad(), reverse = True)
+
+	return lista_resultado
+
+
+def inicializar_turnos(pilotos):
+	'''
+	Recibe una lista de pilotos ordenados segun la velocidad de sus gunplas y devuelve una cola 
+	de "turnos" donde el primer turno corresponde al gunpla mas rapido y el ultimo al mas lento.
+	'''
+	cola_turnos = Cola()
+
+	for piloto in pilotos:
+		cola_turnos.encolar(piloto)
+
+	return cola_turnos
+	
+def main():
+
+	pilotos = generar_pilotos()
+	print(pilotos)
+
+	partes = generar_partes()
+	esqueletos = generar_esqueletos()
+	elegir_esqueletos(pilotos,esqueletos)
+	reservadas = elegir_partes(partes,pilotos)
+	equipar_gunplas(reservadas)
+	ordenados = ordenar_pilotos(pilotos)
+
+	print(ordenados)
