@@ -45,7 +45,7 @@ class Piloto:
 
 		for parte in partes:
 
-			if partes[parte].get_energia() > partes[parte_elegida].ver_tope().get_energia():
+			if partes[parte].ver_tope().get_energia() > partes[parte_elegida].ver_tope().get_energia():
 				parte_elegida = parte
 
 		return parte_elegida
