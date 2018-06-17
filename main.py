@@ -4,15 +4,16 @@ from Cola import *
 from piloto import *
 
 CANTIDAD_ESQUELETOS = 10
-CANTIDAD_PARTES = 10
+CANTIDAD_PARTES = 16
 CANTIDAD_ARMAS = 10
+
 CANTIDAD_PILOTOS = 4
 
 TIPO_ARMA_MELEE = "MELEE"
 TIPO_ARMA_RANGO = "RANGO"
 
-PROBABILIDAD_COMBINACION_MELEE = 5
-PROBABILIDAD_COMBINACION_RANGO = 5
+PROBABILIDAD_COMBINACION_MELEE = 25
+PROBABILIDAD_COMBINACION_RANGO = 15
 
 
 FACTOR_DAÑO_CRITICO = 1.5
@@ -172,6 +173,7 @@ def calcular_daño(arma,piloto,oponente,armas_usadas,contraataque=False):
 
 		if random.random() < arma.get_precision()/100:
 			if random.random() < (arma.get_precision()*PROBABILIDAD_DAÑO_CRITICO)/100:
+				print("GOLPE CRITICO!")
 				daño_total+= arma.get_daño()*FACTOR_DAÑO_CRITICO
 			else:
 				daño_total+= arma.get_daño()
@@ -193,7 +195,7 @@ def calcular_daño(arma,piloto,oponente,armas_usadas,contraataque=False):
 		elif arma.get_tipo()==TIPO_ARMA_RANGO:
 
 			if random.random() < PROBABILIDAD_COMBINACION_RANGO/100:
-
+				
 				arma_elegida = piloto.elegir_arma(oponente)
 				arma_elegida.usar()
 				armas_usadas.append(arma_elegida)
@@ -201,6 +203,21 @@ def calcular_daño(arma,piloto,oponente,armas_usadas,contraataque=False):
 
 	return daño_total
 
+def actualizar_armas(armas_usadas):
+	'''
+	Recibe una lista de armas usadas y actualiza sus tiempos de recarga.
+	'''
+	armas_listas=[]
+
+	for arma in armas_usadas:
+
+		arma.recargar()
+
+		if arma.esta_lista():
+			armas_listas.append(arma)
+
+	for arma_lista in armas_listas:
+		armas_usadas.remove(arma_lista)
 
 def main():
 
@@ -221,9 +238,10 @@ def main():
 
 	gunplas_activos = [piloto[1].get_gunpla() for piloto in pilotos]
 	armas_usadas = [] #Lista para almacenar las armas que estan en su tiempo de recarga.
+	turno = 0
 
 	while len(gunplas_activos)>=2:
-		
+		turno+=1
 		numero_piloto, atacante = turnos.desencolar()
 
 		#Se saltean los turnos pertenecientes a gunplas muertos.
@@ -231,22 +249,12 @@ def main():
 			continue
 
 
-		print("#-------------------#")
+		print("#----------{}---------#".format(turno))
 		print("Es el turno de atacar de Piloto {}!".format(numero_piloto))
 
 
 		#Se actualiza el tiempo recarga de las armas
-		armas_listas=[]
-
-		for arma in armas_usadas:
-			arma.recargar()
-
-			if arma.esta_lista:
-				armas_listas.append(arma)
-
-		for arma_lista in armas_listas:
-			armas_usadas.remove(arma_lista)
-
+		actualizar_armas(armas_usadas)
 
 		indice_oponente_elegido = atacante.elegir_oponente(gunplas_activos)
 		oponente_elegido = gunplas_activos[indice_oponente_elegido]
@@ -260,21 +268,34 @@ def main():
 				break
 
 		print("El oponente elegido por Piloto {} es Piloto {}!".format(numero_piloto,piloto_oponente[0]))
+
 		arma_elegida = atacante.elegir_arma(oponente_elegido)
+		if not arma_elegida:
+			print("Piloto {} no tiene mas armas disponibles y pierde su turno!".format(numero_piloto))
+			continue
+		
+		if arma_elegida in armas_usadas:
+			print("Arma invalida")
+
+
 		arma_elegida.usar()
 		armas_usadas.append(arma_elegida)
 
+		
 		daño = calcular_daño(arma_elegida,atacante,oponente_elegido,armas_usadas)
 		daño_efectivo = oponente_elegido.recibir_daño(daño,arma_elegida.get_tipo_municion())
 
-		if daño_efectivo==0:
-			turnos.encolar(piloto_oponente)
+		print("Piloto {} ataca a Piloto {} con {} causandole {} puntos de daño!".format(numero_piloto,piloto_oponente[0],arma_elegida.get_clase(),daño_efectivo))
 
+		if daño_efectivo==0:
+			
+			turnos.encolar(piloto_oponente)
 
 		if oponente_elegido.get_energia_restante()<=0:
 			print("Piloto {} fue eliminado :(".format(piloto_oponente[0]))
 
 			if daño_efectivo > oponente_elegido.get_energia()*FACTOR_TURNO_BONUS/100:
+				print("OVERKILL! Piloto {} recibe un turno adicional!".format(numero_piloto))
 				turnos.encolar((numero_piloto,atacante))
 
 			gunplas_activos.remove(oponente_elegido)
