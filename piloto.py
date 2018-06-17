@@ -85,13 +85,14 @@ class Piloto:
 		'''
 		Devuelve el arma con la cual se decide atacar al oponente.
 		'''
-		armas_disponibles = [arma for arma in self.gunpla.get_armamento() if lambda arma: arma.esta_lista()]
-
+		armas_disponibles = [arma for arma in self.gunpla.get_armamento() if arma.esta_lista()]
 		armas_hadron = [arma for arma in armas_disponibles if arma.get_tipo_municion()==TIPO_MUNICION_HADRON]
 		armas_fisicas = [arma for arma in armas_disponibles if arma.get_tipo_municion()==TIPO_MUNICION_FISICA]
 		armas_laser = [arma for arma in armas_disponibles if arma.get_tipo_municion()==TIPO_MUNICION_LASER]
 
-
+		if not armas_disponibles:
+			return None
+			
 		#Elige , en lo posible, un arma de hadron
 		if any(armas_hadron):
 			arma_elegida=armas_hadron[0]
