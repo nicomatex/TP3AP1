@@ -8,6 +8,18 @@ CANTIDAD_PARTES = 20
 CANTIDAD_ARMAS = 20
 CANTIDAD_PILOTOS = 5
 
+TIPO_ARMA_MELEE = "MELEE"
+TIPO_ARMA_RANGO = "RANGO"
+
+PROBABILIDAD_COMBINACION_MELEE = 5
+PROBABILIDAD_COMBINACION_RANGO = 5
+
+
+FACTOR_DAÑO_CRITICO = 1.5
+FACTOR_TURNO_BONUS = 5
+
+PROBABILIDAD_DAÑO_CRITICO = 25
+
 def generar_esqueletos():
 	'''
 	Devuelve una lista con CANTIDAD_ESQUELETOS de esqueletos generados de forma aleatoria.
@@ -134,9 +146,7 @@ def ordenar_pilotos(pilotos):
 	una lista de los pilotos ordenados segun la velocidad de sus gunplas.
 	'''
 
-	lista_resultado = sorted(pilotos, key = lambda piloto: piloto[1].get_gunpla().get_velocidad(), reverse = True)
-
-	return lista_resultado
+	pilotos.sort(key = lambda piloto: piloto[1].get_gunpla().get_velocidad(), reverse = True)
 
 
 def inicializar_turnos(pilotos):
@@ -151,34 +161,129 @@ def inicializar_turnos(pilotos):
 
 	return cola_turnos
 
-def calcular_dano(arma):
+def calcular_daño(arma,piloto,oponente,armas_usadas,contraataque=False):
 	'''
-	Recibe un arma y calcula el danio que esta realizara al oponente.
+	Recibe un arma, un piloto y un gunpla oponente y devuelve el daño que esta realizara al gunpla oponente. 
+	Recibe opcionalmente un parametro booleano contraataque. 
 	'''
-	dano_total = 0
+	daño_total = 0
+
 	for i in range(arma.get_hits()):
+
+		if random.random() < arma.get_precision()/100:
+			if random.random() < (arma.get_precision()*PROBABILIDAD_DAÑO_CRITICO)/100:
+				daño_total+= arma.get_daño()*FACTOR_DAÑO_CRITICO
+			else:
+				daño_total+= arma.get_daño()
+
+		if contraataque:
+			continue
+
+
+		#Calculo de combinacion de armas.
+		if arma.get_tipo()==TIPO_ARMA_MELEE:
+
+			if random.random() < PROBABILIDAD_COMBINACION_MELEE/100:
+
+				arma_elegida = piloto.elegir_arma(oponente)
+				arma_elegida.usar()
+				armas_usadas.append(arma_elegida)
+				daño_total+= calcular_daño(arma_elegida,piloto,oponente,armas_usadas)
+
+		elif arma.get_tipo()==TIPO_ARMA_RANGO:
+
+			if random.random() < PROBABILIDAD_COMBINACION_RANGO/100:
+
+				arma_elegida = piloto.elegir_arma(oponente)
+				arma_elegida.usar()
+				armas_usadas.append(arma_elegida)
+				daño_total+= calcular_daño(arma_elegida,piloto,oponente,armas_usadas)
+
+	return daño_total
+
 
 def main():
 
 	pilotos = generar_pilotos()
 
-	print(pilotos)#Debug
+	#print(pilotos)#Debug
 
 	partes = generar_partes()
 	esqueletos = generar_esqueletos()
 	elegir_esqueletos(pilotos,esqueletos)
 	reservadas = elegir_partes(partes,pilotos)
 	equipar_gunplas(reservadas)
-	ordenados = ordenar_pilotos(pilotos)
+	ordenar_pilotos(pilotos)
 
-	print(ordenados)#Debug
+	#print(ordenados)#Debug
 
-	turnos = inicializar_turnos(ordenados)
-
+	turnos = inicializar_turnos(pilotos)
 
 	gunplas_activos = [piloto[1].get_gunpla() for piloto in pilotos]
+	armas_usadas = [] #Lista para almacenar las armas que estan en su tiempo de recarga.
 
 	while len(gunplas_activos)>=2:
+		#Se actualiza el tiempo recarga de las armas
+		armas_listas=[]
+
+		for arma in armas_usadas:
+			arma.recargar()
+
+			if arma.esta_lista:
+				armas_listas.append(arma)
+
+		for arma_lista in armas_listas:
+			armas_usadas.remove(arma_lista)
+
+		print("#-------------------#")
 		numero_piloto, atacante = turnos.desencolar()
-		oponente_elegido = atacante.elegir_oponente(gunplas_activos)
-		arma_elegida = atacante.elegir_arma(oponente)
+		print("Es el turno de atacar de Piloto {}!".format(numero_piloto))
+
+		indice_oponente_elegido = atacante.elegir_oponente(gunplas_activos)
+		oponente_elegido = gunplas_activos[indice_oponente_elegido]
+
+		#Se busca el piloto al cual le pertenece el gunpla elegido
+		piloto_oponente= pilotos[0]
+
+		for piloto in pilotos:
+			if piloto[1].get_gunpla()==oponente_elegido:
+				piloto_oponente=piloto
+				break
+
+		print("El oponente elegido por Piloto {} es Piloto {}!".format(numero_piloto,piloto_oponente[0]))
+		arma_elegida = atacante.elegir_arma(oponente_elegido)
+		arma_elegida.usar()
+		armas_usadas.append(arma_elegida)
+
+		daño = calcular_daño(arma_elegida,atacante,oponente_elegido,armas_usadas)
+		daño_efectivo = oponente_elegido.recibir_daño(daño,arma_elegida.get_tipo_municion())
+
+		if daño_efectivo==0:
+			turnos.encolar(piloto_oponente)
+
+		if oponente_elegido.get_energia_restante()<=0:
+
+			if daño_efectivo > oponente_elegido.get_energia()*FACTOR_TURNO_BONUS/100:
+				turnos.encolar((numero_piloto,atacante))
+
+			gunplas_activos.remove(oponente_elegido)
+			turnos.encolar((numero_piloto,atacante))
+			continue
+
+		if arma_elegida.get_tipo_municion()==TIPO_ARMA_MELEE:
+
+			numero_piloto_contraataque,contraatacante = piloto_oponente 
+			arma_contraataque = contraatacante.elegir_arma(atacante)
+			arma_contraataque.usar()
+
+			daño_contraataque = calcular_daño(arma_contraataque,contraatacante,atacante,armas_usadas,True)
+
+			atacante.get_gunpla().recibir_daño(daño_contraataque,arma_contraataque.get_tipo_municion())
+
+			if atacante.get_gunpla().get_energia_restante<=0:
+				gunplas_activos.remove(atacante.get_gunpla())
+				continue
+
+		turnos.encolar((numero_piloto,atacante))
+	
+main()
