@@ -81,9 +81,11 @@ class Piloto:
 
 		return oponentes.index(oponente_elegido)
 
-	def elegir_arma(self,oponente):
+	def elegir_arma(self,oponente,combinacion=False,arma_combinacion=None):
 		'''
-		Devuelve el arma con la cual se decide atacar al oponente.
+		Recibe un oponente y devuelve el arma con el cual se desea atacar al oponente. Recibe ademas opcionalmente
+		un booleano Combinacion en caso de que se trate de una seleccion de arma para combinacion y un arma a partir de la cual
+		surge el ataque combinado.
 		'''
 		armas_disponibles = [arma for arma in self.gunpla.get_armamento() if arma.esta_lista()]
 		armas_hadron = [arma for arma in armas_disponibles if arma.get_tipo_municion()==TIPO_MUNICION_HADRON]
@@ -92,7 +94,25 @@ class Piloto:
 
 		if not armas_disponibles:
 			return None
-			
+		
+		#Caso de elegir un arma para combinar
+		if combinacion:
+			if arma_combinacion.get_tipo()==TIPO_MUNICION_LASER:
+
+				for arma in armas_laser:
+
+					if arma.get_clase()==arma_combinacion.get_clase():
+						return arma
+				return None
+
+			else:
+
+				for arma in armas_fisicas:
+
+					if arma.get_clase()==arma_combinacion.get_clase():
+						return arma
+				return None
+				
 		#Elige , en lo posible, un arma de hadron
 		if any(armas_hadron):
 			arma_elegida=armas_hadron[0]
