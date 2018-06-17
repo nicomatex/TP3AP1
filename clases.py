@@ -8,11 +8,11 @@ RANGO_ARMA_ENERGIA = (-4,10)
 RANGO_ARMA_DAÑO = (5,20)
 RANGO_ARMA_HITS = (1,3)
 RANGO_ARMA_PRECISION = (30,90)
-RANGO_ARMA_TIEMPO_RECARGA = (1,2)
+RANGO_ARMA_TIEMPO_RECARGA = (2,4)
 
 RANGO_ESQUELETO_VELOCIDAD = (-4,10)
-RANGO_ESQUELETO_ENERGIA = (-4,10)
-RANGO_ESQUELETO_MOVILIDAD = (0,100)
+RANGO_ESQUELETO_ENERGIA = (0,50)
+RANGO_ESQUELETO_MOVILIDAD = (100,200)
 ESQUELETO_SLOTS = 20
 
 RANGO_PARTE_PESO = (1,10)
@@ -20,7 +20,7 @@ RANGO_PARTE_ARMADURA = (-4,10)
 RANGO_PARTE_ESCUDO = (-2,10)
 RANGO_PARTE_VELOCIDAD = (-2,10)
 RANGO_PARTE_ENERGIA = (2,20)
-RANGO_PARTE_SLOTS = (0,3)
+RANGO_PARTE_SLOTS = (0,20)
 
 GUNPLA_SLOTS = 4
 
@@ -30,7 +30,8 @@ CLASES_ARMA = ("GN Blade","Chaos Sword", "Frostmourne","Ashbringer","Elucidator"
 TIPOS_MUNICION = ("FISICA","LASER","HADRON")
 TIPOS_ARMA = ("MELEE","RANGO")
 
-PROBABILIDAD_ESQUIVAR = 80
+PROBABILIDAD_ESQUIVAR = 0
+
 class Gunpla:
 	'''
 	Representa un Gunpla. Un Gunpla esta compuesto de un Esqueleto, un conjunto de partes y un conjunto de armas.
@@ -187,12 +188,16 @@ class Gunpla:
 			daño_recibido = daño-self.armadura #Calculo de reduccion de daño.
 
 			self.energia_restante-=daño_recibido
+			if daño_recibido<0:
+				return 0
 			return daño_recibido
 
 		if tipo_municion=="LASER":
 
 			daño_recibido = daño- daño*self.escudo #Calculo de reduccion de daño.
 			self.energia_restante-=daño_recibido
+			if daño_recibido<0:
+				return 0
 			return daño_recibido
 
 class Arma:
@@ -296,7 +301,6 @@ class Arma:
 		Establece tiempo_recarga_restante en tiempo_recarga turnos.
 		'''
 		self.tiempo_recarga_restante = self.tiempo_recarga
-		self.esta_lista = False
 
 	def recargar(self):
 		'''
@@ -305,13 +309,20 @@ class Arma:
 		self.tiempo_recarga_restante-=1
 
 		if self.tiempo_recarga_restante==0:
-			self.esta_lista=True
+			self.tiempo_recarga_restante=0
+
+	def reiniciar(self):
+		'''
+		Reinicia el tiempo de recarga del arma(lo pone en cero y la deja lista para ser usada).
+		'''
+
+		self.tiempo_recarga_restante = 0
 
 	def esta_lista(self):
 		'''
 		Devuelve True si el arma es capaz de ser utilizada en este turno, caso contrario devuelve False.
 		'''
-		return self.estado==True
+		return self.tiempo_recarga_restante==0
 
 	def get_tipo_parte(self):
 		'''
