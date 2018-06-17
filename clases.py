@@ -30,6 +30,7 @@ CLASES_ARMA = ("GN Blade","Chaos Sword", "Frostmourne","Ashbringer","Elucidator"
 TIPOS_MUNICION = ("FISICA","LASER","HADRON")
 TIPOS_ARMA = ("MELEE","RANGO")
 
+PROBABILIDAD_ESQUIVAR = 80
 class Gunpla:
 	'''
 	Representa un Gunpla. Un Gunpla esta compuesto de un Esqueleto, un conjunto de partes y un conjunto de armas.
@@ -103,7 +104,14 @@ class Gunpla:
 		peso = self.get_peso()
 		velocidad = self.get_velocidad()
 
-		return (base - (peso/2) + (velocidad *3)) / base 
+		movilidad = (base - (peso/2) + (velocidad *3)) / base
+		
+		if movilidad>1:
+			return 1
+		elif movilidad<0:
+			return 0
+
+		return movilidad
 
 	def get_armamento(self):
 		'''
@@ -161,6 +169,20 @@ class Gunpla:
 		Devuelve la cantidad de slots disponibles para armas en el gunpla.
 		'''
 		return self.esqueleto.get_cantidad_slots()
+
+	def recibir_daño(self,daño,tipo_daño):
+		'''
+		Recibe una cantidad de daño y un tipo de daño y le resta al gunpla la energia 
+		correspondiente segun la reduccion que corresponda.
+		'''
+		if random.random() < (self.get_movilidad()*PROBABILIDAD_ESQUIVAR)/100:
+			return 0
+
+		if tipo_daño=="HADRON":
+			self.energia_resante-=daño
+			return daño
+		
+		if tipo_daño==""
 
 class Arma:
 	'''
