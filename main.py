@@ -150,11 +150,19 @@ def inicializar_turnos(pilotos):
 		cola_turnos.encolar(piloto)
 
 	return cola_turnos
-	
+
+def calcular_dano(arma):
+	'''
+	Recibe un arma y calcula el danio que esta realizara al oponente.
+	'''
+	dano_total = 0
+	for i in range(arma.get_hits()):
+
 def main():
 
 	pilotos = generar_pilotos()
-	print(pilotos)
+
+	print(pilotos)#Debug
 
 	partes = generar_partes()
 	esqueletos = generar_esqueletos()
@@ -163,4 +171,14 @@ def main():
 	equipar_gunplas(reservadas)
 	ordenados = ordenar_pilotos(pilotos)
 
-	print(ordenados)
+	print(ordenados)#Debug
+
+	turnos = inicializar_turnos(ordenados)
+
+
+	gunplas_activos = [piloto[1].get_gunpla() for piloto in pilotos]
+
+	while len(gunplas_activos)>=2:
+		numero_piloto, atacante = turnos.desencolar()
+		oponente_elegido = atacante.elegir_oponente(gunplas_activos)
+		arma_elegida = atacante.elegir_arma(oponente)
