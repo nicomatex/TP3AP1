@@ -4,9 +4,9 @@ from Cola import *
 from piloto import *
 
 CANTIDAD_ESQUELETOS = 10
-CANTIDAD_PARTES = 20
-CANTIDAD_ARMAS = 20
-CANTIDAD_PILOTOS = 5
+CANTIDAD_PARTES = 10
+CANTIDAD_ARMAS = 10
+CANTIDAD_PILOTOS = 4
 
 TIPO_ARMA_MELEE = "MELEE"
 TIPO_ARMA_RANGO = "RANGO"
@@ -223,6 +223,18 @@ def main():
 	armas_usadas = [] #Lista para almacenar las armas que estan en su tiempo de recarga.
 
 	while len(gunplas_activos)>=2:
+		
+		numero_piloto, atacante = turnos.desencolar()
+
+		#Se saltean los turnos pertenecientes a gunplas muertos.
+		if atacante.get_gunpla() not in gunplas_activos:
+			continue
+
+
+		print("#-------------------#")
+		print("Es el turno de atacar de Piloto {}!".format(numero_piloto))
+
+
 		#Se actualiza el tiempo recarga de las armas
 		armas_listas=[]
 
@@ -235,9 +247,6 @@ def main():
 		for arma_lista in armas_listas:
 			armas_usadas.remove(arma_lista)
 
-		print("#-------------------#")
-		numero_piloto, atacante = turnos.desencolar()
-		print("Es el turno de atacar de Piloto {}!".format(numero_piloto))
 
 		indice_oponente_elegido = atacante.elegir_oponente(gunplas_activos)
 		oponente_elegido = gunplas_activos[indice_oponente_elegido]
@@ -261,7 +270,9 @@ def main():
 		if daño_efectivo==0:
 			turnos.encolar(piloto_oponente)
 
+
 		if oponente_elegido.get_energia_restante()<=0:
+			print("Piloto {} fue eliminado :(".format(piloto_oponente[0]))
 
 			if daño_efectivo > oponente_elegido.get_energia()*FACTOR_TURNO_BONUS/100:
 				turnos.encolar((numero_piloto,atacante))
@@ -285,5 +296,14 @@ def main():
 				continue
 
 		turnos.encolar((numero_piloto,atacante))
-	
+
+	#Se busca a que piloto le pertenece el gunpla vencedor.
+	vencedor = pilotos[0]
+
+	for piloto in pilotos:
+		if piloto[1].get_gunpla()==gunplas_activos[0]:
+			vencedor=piloto
+			break
+
+	print("EL GRAN VENCEDOR ES PILOTO {}!!".format(vencedor[0]))
 main()
