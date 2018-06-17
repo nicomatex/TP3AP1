@@ -170,7 +170,7 @@ class Gunpla:
 		'''
 		return self.esqueleto.get_cantidad_slots()
 
-	def recibir_daño(self,daño,tipo_daño):
+	def recibir_daño(self,daño,tipo_municion):
 		'''
 		Recibe una cantidad de daño y un tipo de daño y le resta al gunpla la energia 
 		correspondiente segun la reduccion que corresponda.
@@ -178,11 +178,22 @@ class Gunpla:
 		if random.random() < (self.get_movilidad()*PROBABILIDAD_ESQUIVAR)/100:
 			return 0
 
-		if tipo_daño=="HADRON":
-			self.energia_resante-=daño
+		if tipo_municion=="HADRON":
+			self.energia_restante-=daño
 			return daño
 		
-		if tipo_daño==""
+		if tipo_municion=="FISICA":
+
+			daño_recibido = daño-self.armadura #Calculo de reduccion de daño.
+
+			self.energia_restante-=daño_recibido
+			return daño_recibido
+
+		if tipo_municion=="LASER":
+
+			daño_recibido = daño- daño*self.escudo #Calculo de reduccion de daño.
+			self.energia_restante-=daño_recibido
+			return daño_recibido
 
 class Arma:
 	'''
@@ -205,7 +216,7 @@ class Arma:
 		self.precision = random.randint(RANGO_ARMA_PRECISION[0],RANGO_ARMA_PRECISION[1])
 		self.tiempo_recarga = random.randint(RANGO_ARMA_TIEMPO_RECARGA[0],RANGO_ARMA_TIEMPO_RECARGA[1])
 		self.tiempo_recarga_restante = 0
-		self.esta_lista = True
+		self.estado = True
 		self.tipo_parte = "Arma"
 
 	def get_peso(self):
@@ -300,7 +311,7 @@ class Arma:
 		'''
 		Devuelve True si el arma es capaz de ser utilizada en este turno, caso contrario devuelve False.
 		'''
-		return self.esta_lista
+		return self.estado==True
 
 	def get_tipo_parte(self):
 		'''
