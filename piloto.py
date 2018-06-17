@@ -69,6 +69,13 @@ class Piloto:
 		oponente_elegido = oponentes[0]
 
 		for oponente in oponentes:
+			if oponente==self.get_gunpla():
+				continue
+
+			if oponente_elegido == self.get_gunpla():
+				oponente_elegido=oponente
+				continue
+
 			if oponente.get_energia_restante()<oponente_elegido.get_energia_restante():
 				oponente_elegido = oponente
 

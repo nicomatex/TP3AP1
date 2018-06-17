@@ -7,7 +7,7 @@ RANGO_ARMA_VELOCIDAD = (-4,10)
 RANGO_ARMA_ENERGIA = (-4,10)
 RANGO_ARMA_DAÑO = (5,20)
 RANGO_ARMA_HITS = (1,3)
-RANGO_ARMA_PRECISION = (1,50)
+RANGO_ARMA_PRECISION = (30,90)
 RANGO_ARMA_TIEMPO_RECARGA = (1,2)
 
 RANGO_ESQUELETO_VELOCIDAD = (-4,10)
@@ -30,6 +30,7 @@ CLASES_ARMA = ("GN Blade","Chaos Sword", "Frostmourne","Ashbringer","Elucidator"
 TIPOS_MUNICION = ("FISICA","LASER","HADRON")
 TIPOS_ARMA = ("MELEE","RANGO")
 
+PROBABILIDAD_ESQUIVAR = 80
 class Gunpla:
 	'''
 	Representa un Gunpla. Un Gunpla esta compuesto de un Esqueleto, un conjunto de partes y un conjunto de armas.
@@ -103,7 +104,14 @@ class Gunpla:
 		peso = self.get_peso()
 		velocidad = self.get_velocidad()
 
-		return (base - (peso/2) + (velocidad *3)) / base 
+		movilidad = (base - (peso/2) + (velocidad *3)) / base
+		
+		if movilidad>1:
+			return 1
+		elif movilidad<0:
+			return 0
+
+		return movilidad
 
 	def get_armamento(self):
 		'''
@@ -162,6 +170,31 @@ class Gunpla:
 		'''
 		return self.esqueleto.get_cantidad_slots()
 
+	def recibir_daño(self,daño,tipo_municion):
+		'''
+		Recibe una cantidad de daño y un tipo de daño y le resta al gunpla la energia 
+		correspondiente segun la reduccion que corresponda.
+		'''
+		if random.random() < (self.get_movilidad()*PROBABILIDAD_ESQUIVAR)/100:
+			return 0
+
+		if tipo_municion=="HADRON":
+			self.energia_restante-=daño
+			return daño
+		
+		if tipo_municion=="FISICA":
+
+			daño_recibido = daño-self.armadura #Calculo de reduccion de daño.
+
+			self.energia_restante-=daño_recibido
+			return daño_recibido
+
+		if tipo_municion=="LASER":
+
+			daño_recibido = daño- daño*self.escudo #Calculo de reduccion de daño.
+			self.energia_restante-=daño_recibido
+			return daño_recibido
+
 class Arma:
 	'''
 	Representa un arma.
@@ -182,7 +215,8 @@ class Arma:
 		self.hits = random.randint(RANGO_ARMA_HITS[0],RANGO_ARMA_HITS[1])
 		self.precision = random.randint(RANGO_ARMA_PRECISION[0],RANGO_ARMA_PRECISION[1])
 		self.tiempo_recarga = random.randint(RANGO_ARMA_TIEMPO_RECARGA[0],RANGO_ARMA_TIEMPO_RECARGA[1])
-		self.esta_lista = True
+		self.tiempo_recarga_restante = 0
+		self.estado = True
 		self.tipo_parte = "Arma"
 
 	def get_peso(self):
@@ -257,11 +291,27 @@ class Arma:
 		'''
 		return self.tiempo_recarga
 
+	def usar(self):
+		'''
+		Establece tiempo_recarga_restante en tiempo_recarga turnos.
+		'''
+		self.tiempo_recarga_restante = self.tiempo_recarga
+		self.esta_lista = False
+
+	def recargar(self):
+		'''
+		Reduce en una unidad al tiempo de recarga restante.
+		'''
+		self.tiempo_recarga_restante-=1
+
+		if self.tiempo_recarga_restante==0:
+			self.esta_lista=True
+
 	def esta_lista(self):
 		'''
 		Devuelve True si el arma es capaz de ser utilizada en este turno, caso contrario devuelve False.
 		'''
-		return self.esta_lista
+		return self.estado==True
 
 	def get_tipo_parte(self):
 		'''
