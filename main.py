@@ -4,7 +4,7 @@ from Cola import *
 from piloto import *
 
 CANTIDAD_ESQUELETOS = 10
-CANTIDAD_PARTES = 16
+CANTIDAD_PARTES = 20
 CANTIDAD_ARMAS = 10
 
 CANTIDAD_PILOTOS = 4
@@ -186,20 +186,28 @@ def calcular_daño(arma,piloto,oponente,armas_usadas,contraataque=False):
 		if arma.get_tipo()==TIPO_ARMA_MELEE:
 
 			if random.random() < PROBABILIDAD_COMBINACION_MELEE/100:
+				arma_elegida = piloto.elegir_arma(oponente,True,arma)
 
-				arma_elegida = piloto.elegir_arma(oponente)
-				arma_elegida.usar()
-				armas_usadas.append(arma_elegida)
-				daño_total+= calcular_daño(arma_elegida,piloto,oponente,armas_usadas)
+				if not arma_elegida:
+					daño_total+=0
+				else:
+					print("Combinacion de arma {}!".format(arma.get_clase()))
+					arma_elegida.usar()
+					armas_usadas.append(arma_elegida)
+					daño_total+= calcular_daño(arma_elegida,piloto,oponente,armas_usadas)
 
 		elif arma.get_tipo()==TIPO_ARMA_RANGO:
 
 			if random.random() < PROBABILIDAD_COMBINACION_RANGO/100:
-				
-				arma_elegida = piloto.elegir_arma(oponente)
-				arma_elegida.usar()
-				armas_usadas.append(arma_elegida)
-				daño_total+= calcular_daño(arma_elegida,piloto,oponente,armas_usadas)
+				arma_elegida = piloto.elegir_arma(oponente,True,arma)
+
+				if not arma_elegida:
+					daño_total+=0
+				else:
+					print("Combinacion de arma {}!".format(arma.get_clase()))
+					arma_elegida.usar()
+					armas_usadas.append(arma_elegida)
+					daño_total+= calcular_daño(arma_elegida,piloto,oponente,armas_usadas)
 
 	return daño_total
 
@@ -269,19 +277,21 @@ def main():
 
 		print("El oponente elegido por Piloto {} es Piloto {}!".format(numero_piloto,piloto_oponente[0]))
 
+		#Se elige con que arma atacar
 		arma_elegida = atacante.elegir_arma(oponente_elegido)
 		if not arma_elegida:
 			print("Piloto {} no tiene mas armas disponibles y pierde su turno!".format(numero_piloto))
 			continue
-		
+
+		#DEBUG
 		if arma_elegida in armas_usadas:
 			print("Arma invalida")
 
-
+		#Se establece el tiempo de recarga del arma
 		arma_elegida.usar()
 		armas_usadas.append(arma_elegida)
 
-		
+		#Se calcula el daño y el daño efectivo 
 		daño = calcular_daño(arma_elegida,atacante,oponente_elegido,armas_usadas)
 		daño_efectivo = oponente_elegido.recibir_daño(daño,arma_elegida.get_tipo_municion())
 
@@ -302,19 +312,25 @@ def main():
 			turnos.encolar((numero_piloto,atacante))
 			continue
 
-		if arma_elegida.get_tipo_municion()==TIPO_ARMA_MELEE:
+		#Se calcula el contraataque.
+		if arma_elegida.get_tipo()==TIPO_ARMA_MELEE:
 
 			numero_piloto_contraataque,contraatacante = piloto_oponente 
-			arma_contraataque = contraatacante.elegir_arma(atacante)
-			arma_contraataque.usar()
+			arma_contraataque = contraatacante.elegir_arma(atacante.get_gunpla())
 
-			daño_contraataque = calcular_daño(arma_contraataque,contraatacante,atacante,armas_usadas,True)
 
-			atacante.get_gunpla().recibir_daño(daño_contraataque,arma_contraataque.get_tipo_municion())
+			if not arma_contraataque: #Comprobacion de arma disponible para contraatacar.
+				print("Piloto {} no tiene armas para contraatacar!".format(numero_piloto_contraataque))
+			else:
+				arma_contraataque.usar()
 
-			if atacante.get_gunpla().get_energia_restante<=0:
-				gunplas_activos.remove(atacante.get_gunpla())
-				continue
+				daño_contraataque = calcular_daño(arma_contraataque,contraatacante,atacante.get_gunpla(),armas_usadas,True)
+
+				daño_efectivo_contraataque = atacante.get_gunpla().recibir_daño(daño_contraataque,arma_contraataque.get_tipo_municion())
+				print("Piloto {} contraataca, causando {} de daño!".format(numero_piloto_contraataque,daño_efectivo_contraataque))
+				if atacante.get_gunpla().get_energia_restante()<=0:
+					gunplas_activos.remove(atacante.get_gunpla())
+					continue
 
 		turnos.encolar((numero_piloto,atacante))
 
