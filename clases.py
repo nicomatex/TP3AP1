@@ -7,7 +7,7 @@ RANGO_ARMA_VELOCIDAD = (-4,10)
 RANGO_ARMA_ENERGIA = (-4,10)
 RANGO_ARMA_DAÑO = (5,20)
 RANGO_ARMA_HITS = (1,3)
-RANGO_ARMA_PRECISION = (1,50)
+RANGO_ARMA_PRECISION = (30,90)
 RANGO_ARMA_TIEMPO_RECARGA = (1,2)
 
 RANGO_ESQUELETO_VELOCIDAD = (-4,10)
@@ -182,6 +182,7 @@ class Arma:
 		self.hits = random.randint(RANGO_ARMA_HITS[0],RANGO_ARMA_HITS[1])
 		self.precision = random.randint(RANGO_ARMA_PRECISION[0],RANGO_ARMA_PRECISION[1])
 		self.tiempo_recarga = random.randint(RANGO_ARMA_TIEMPO_RECARGA[0],RANGO_ARMA_TIEMPO_RECARGA[1])
+		self.tiempo_recarga_restante = 0
 		self.esta_lista = True
 		self.tipo_parte = "Arma"
 
@@ -256,6 +257,22 @@ class Arma:
 		Devuelve la cantidad de turnos que tarda un arma en estar lista.
 		'''
 		return self.tiempo_recarga
+
+	def usar(self):
+		'''
+		Establece tiempo_recarga_restante en tiempo_recarga turnos.
+		'''
+		self.tiempo_recarga_restante = self.tiempo_recarga
+		self.esta_lista = False
+
+	def recargar(self):
+		'''
+		Reduce en una unidad al tiempo de recarga restante.
+		'''
+		self.tiempo_recarga_restante-=1
+
+		if self.tiempo_recarga_restante==0:
+			self.esta_lista=True
 
 	def esta_lista(self):
 		'''
