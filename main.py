@@ -7,9 +7,8 @@ CANTIDAD_ESQUELETOS = 10
 CANTIDAD_PARTES = 20
 CANTIDAD_ARMAS = 10
 
-EQUIPOS = 3
+CANTIDAD_EQUIPOS = 3
 PIOLOTOS_POR_EQUIPO = 2
-CANTIDAD_PILOTOS = EQUIPOS * PIOLOTOS_POR_EQUIPO 
 
 TIPO_ARMA_MELEE = "MELEE"
 TIPO_ARMA_RANGO = "RANGO"
@@ -66,7 +65,7 @@ def generar_pilotos():
 	esa cantidad de pilotos.
 	'''
 	lista_pilotos = []
-	cantidad_pilotos = EQUIPOS * PIOLOTOS_POR_EQUIPO 
+	cantidad_pilotos = CANTIDAD_EQUIPOS * PIOLOTOS_POR_EQUIPO 
 
 	for i in range(0,cantidad_pilotos):
 		lista_pilotos.append((i,Piloto()))
@@ -143,6 +142,13 @@ def equipar_gunplas(partes_reservadas):
 				piloto[1].get_gunpla().attach_arma(parte)
 			else:
 				piloto[1].get_gunpla().attach_parte(parte)
+
+def generar_equipos(pilotos):
+	'''
+	Recibe una lista de tuplas de la forma <numero de piloto,piloto> y
+	devuelve un una lista con los equipos seleccionados
+	'''
+	pass
 
 def ordenar_pilotos(pilotos):
 	'''
