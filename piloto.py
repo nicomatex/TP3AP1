@@ -1,6 +1,3 @@
-from clases import *
-from main import *
-
 TIPO_MUNICION_LASER = "LASER"
 TIPO_MUNICION_FISICA = "FISICA"
 TIPO_MUNICION_HADRON = "HADRON"
