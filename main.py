@@ -66,8 +66,9 @@ def generar_pilotos():
 	esa cantidad de pilotos.
 	'''
 	lista_pilotos = []
+	cantidad_pilotos = EQUIPOS * PIOLOTOS_POR_EQUIPO 
 
-	for i in range(0,CANTIDAD_PILOTOS):
+	for i in range(0,cantidad_pilotos):
 		lista_pilotos.append((i,Piloto()))
 
 	return lista_pilotos
