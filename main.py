@@ -190,7 +190,7 @@ def determinar_oponentes(atacante,participantes):
 		
 		if atacante.get_equipo()!=participante.get_equipo():
 			oponentes.append(gunpla_participante)
-			
+
 	return oponentes
 
 def ordenar_pilotos(pilotos):
@@ -290,7 +290,7 @@ def main():
 	elegir_esqueletos(pilotos,esqueletos)
 	reservadas = elegir_partes(partes,pilotos)
 	equipar_gunplas(reservadas)
-	participantes = generar_equipos(pilotos)
+	participantes = generar_participantes(pilotos)
 	ordenar_pilotos(pilotos)
 
 	#print(ordenados)#Debug
