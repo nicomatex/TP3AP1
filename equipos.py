@@ -7,10 +7,10 @@ class Equipo:
 	y puede determinar que pilotos siguen vivos
 	"""
 
-	def __init__(pilotos):
+	def __init__(self,pareja):
 		"""Recibe una lista con los objetos Piloto pertenecientes al equipo"""
 
-		self.pilotos = pilotos
+		self.pilotos = pareja
 		self.pilotos_vivos = []
 		self.nombre = random.choice(NOMBRES_EQUIPO)
 	def get_pilotos_vivos(self):
@@ -28,3 +28,16 @@ class Equipo:
 	def get_nombre(self):
 		"""Devuelve el nombre del equipo"""
 		return self.nombre
+
+class Participante:
+	"""Representa un participante de un equipo, puede saber a que equipo pertenece"""
+
+	def __init__(self,piloto,equipo):
+		"""Recibe un objeto piloto y un objeto equipo"""
+		self.piloto=piloto
+		self.equipo=equipo
+
+	def get_equipo(self):
+		"""Devuelve el equipo del participante"""
+
+		return self.equipo
