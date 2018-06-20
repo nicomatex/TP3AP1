@@ -1,5 +1,6 @@
-NOMBRES_EQUIPO = ("Abomyzation","Ansatsu","Banshee","Bloodbane","Collapse","Cyberstein","Darkness","Defussion","Extermination","Flamecaster")
+import random
 
+NOMBRES_EQUIPO = ("Abomyzation","Ansatsu","Banshee","Bloodbane","Collapse","Cyberstein","Darkness","Defussion","Extermination","Flamecaster")
 
 class Equipo:
 	"""
