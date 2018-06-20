@@ -42,3 +42,9 @@ class Participante:
 		"""Devuelve el equipo del participante"""
 
 		return self.equipo
+
+	def get_piloto(self):
+		"""Devuelve el piloto participante"""
+
+		return self.piloto
+		
