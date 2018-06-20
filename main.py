@@ -144,17 +144,16 @@ def equipar_gunplas(partes_reservadas):
 			else:
 				piloto[1].get_gunpla().attach_parte(parte)
 
-def generar_equipos(pilotos):
+def generar_participantes(pilotos):
 	'''
 	Recibe una lista de tuplas de la forma <numero de piloto,piloto> y
-	devuelve un una lista con los equipos generados y una con los participantes
+	crea los equipos y devuelve una lista con los participantes generados
 	'''
 	participantes = []
 	parejas = [[] for _ in range(CANTIDAD_EQUIPOS)]
 	indice_pareja = 0
 	random.shuffle(pilotos)
 	equipos = []
-	indice_equipo = 0
 	participantes = []
 
 	for _,piloto in pilotos:
@@ -174,8 +173,25 @@ def generar_equipos(pilotos):
 
 			participantes.append(Participante(parejas[i],equipo))
 
-	return equipos,participantes
+	return participantes
 
+def determinar_oponentes(atacante,participantes):
+	"""
+	Recibe un atacante que es un participante que va a atacar,
+	una lista con todos los participantes,
+	y devuelve una lista con los gunplas de sus oponentes
+	"""
+
+	oponentes = []
+
+	for participante in participantes:
+
+		gunpla_participante = participante.get_piloto().get_gunpla()
+		
+		if atacante.get_equipo()!=participante.get_equipo():
+			oponentes.append(gunpla_participante)
+			
+	return oponentes
 
 def ordenar_pilotos(pilotos):
 	'''
@@ -274,7 +290,7 @@ def main():
 	elegir_esqueletos(pilotos,esqueletos)
 	reservadas = elegir_partes(partes,pilotos)
 	equipar_gunplas(reservadas)
-	generar_equipos(pilotos)
+	participantes = generar_equipos(pilotos)
 	ordenar_pilotos(pilotos)
 
 	#print(ordenados)#Debug
