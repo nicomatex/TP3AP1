@@ -15,7 +15,7 @@ class Equipo:
 		self.nombre = random.choice(NOMBRES_EQUIPO)
 	def get_pilotos_vivos(self):
 		"""Devuelve una lista con los pilotos que siguen vivos"""
-		for _,piloto in self.pilotos:
+		for piloto in self.pilotos:
 			if piloto.get_gunpla().get_energia_restante()<=0:
 				continue
 			self.pilotos_vivos.append()
