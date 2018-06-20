@@ -60,51 +60,62 @@ def generar_partes():
 
 	return partes
 
-def generar_pilotos():
+def generar_equipos():
 	'''
-	Recibe un entero cantidad_pilotos y devuelve una lista de tuplas de la forma <numero de piloto, piloto> con 
-	esa cantidad de pilotos.
+	Genera los respectivos pilotos y los sortea dentro de equipos. Devuelve una lista con 
+	los equipos.
 	'''
-	lista_pilotos = []
-	cantidad_pilotos = CANTIDAD_EQUIPOS * PIOLOTOS_POR_EQUIPO 
+	equipos = []
+	nombres_ocupados = []
 
-	for i in range(0,cantidad_pilotos):
-		lista_pilotos.append((i,Piloto()))
+	for _ in range(CANTIDAD_EQUIPOS):
 
-	return lista_pilotos
+		equipo = Equipo()
+		equipo.asignar_nombre(nombres_ocupados)
+		nombres_ocupados.append(equipo.get_nombre())
 
-def elegir_esqueletos(pilotos,esqueletos):
+		for _ in range(PIOLOTOS_POR_EQUIPO):
+			equipo.agregar_participante(Participante(Piloto(),equipo))
+
+		equipos.append(equipo)
+	return equipos
+
+def elegir_esqueletos(participantes,esqueletos):
 	'''
-	Recibe una lista de pilotos y una lista de esqueletos y le permite a cada piloto elegir 
+	Recibe una lista de participantes y una lista de esqueletos y le permite a cada participante elegir 
 	el esqueleto que quiere para su gunpla. No devuelve nada.
 	'''
 	
-	#
+	pilotos = [participante.get_piloto() for participante in participantes]
 	random.shuffle(pilotos)
 
-	for _,piloto in pilotos:
+	for piloto in pilotos:
 		indice_esqueleto_elegido = piloto.elegir_esqueleto(esqueletos)
 
 		#Se instancia un nuevo gunpla con el esqueleto elegido.
 		piloto.set_gunpla(Gunpla(esqueletos[indice_esqueleto_elegido]))
 
-def elegir_partes(partes,pilotos):
+def elegir_partes(partes,participantes):
 	'''
 	Recibe un diccionario partes de la forma <tipo_parte:pila con partes de ese tipo> y una lista de 
 	tuplas de la forma <numero de piloto,piloto>
 	pilotos, y devuelve un diccionario de la forma
 	{(numero de piloto, piloto):[Lista de partes reservadas por el piloto]}
 	'''
+	pilotos = []
+
+	for participante in participantes:
+		pilotos.append(participante.get_piloto())
 
 	partes_reservadas = {piloto:[] for piloto in pilotos}
 
-	piloto_eligiendo = 0
-
 	todas_vacias = False
+	piloto_eligiendo = 0
 
 	while True:
 
 		todas_vacias = True
+
 		for tipo_parte in partes:
 			if not partes[tipo_parte].esta_vacia():
 				todas_vacias = False
@@ -114,7 +125,7 @@ def elegir_partes(partes,pilotos):
 			break
 
 		elector = pilotos[piloto_eligiendo]
-		tipo_parte_elegida = elector[1].elegir_parte(partes)
+		tipo_parte_elegida = elector.elegir_parte(partes)
 		partes_reservadas[elector].append(partes[tipo_parte_elegida].desapilar())
 
 		if partes[tipo_parte_elegida].esta_vacia():
@@ -134,83 +145,51 @@ def equipar_gunplas(partes_reservadas):
 	con las partes elegidas de entre las partes reservadas. No devuelve nada.
 	'''
 
+	#Es necesario poner el indice porque las claves de partes_reservada son tuplas.
 	for piloto in partes_reservadas:
 
-		partes_seleccionadas = piloto[1].elegir_combinacion(partes_reservadas[piloto])
+		partes_seleccionadas = piloto.elegir_combinacion(partes_reservadas[piloto])
 
 		for parte in partes_seleccionadas:
 			if parte.get_tipo_parte()=="Arma":
-				piloto[1].get_gunpla().attach_arma(parte)
+				piloto.get_gunpla().attach_arma(parte)
 			else:
-				piloto[1].get_gunpla().attach_parte(parte)
+				piloto.get_gunpla().attach_parte(parte)
 
-def generar_participantes(pilotos):
+
+def determinar_oponentes(participante_atacante,equipos):
+
 	'''
-	Recibe una lista de tuplas de la forma <numero de piloto,piloto> y
-	crea los equipos y devuelve una lista con los participantes generados
+	Recibe el participante para el cual se desea determinar los oponentes validos y una lista de equipos, 
+	y devuelve una lista de gunplas validos para atacar.
 	'''
-	participantes = []
-	parejas = [[] for _ in range(CANTIDAD_EQUIPOS)]
-	indice_pareja = 0
-	random.shuffle(pilotos)
-	equipos = []
-	participantes = []
 
-	for _,piloto in pilotos:
-		
-		parejas[indice_pareja].append(piloto)
-		
-		if len(parejas[indice_pareja])==PIOLOTOS_POR_EQUIPO:
-			indice_pareja+=1
-
-	for pareja in parejas:
-
-		equipos.append(Equipo(pareja))
+	oponentes_validos = []
 
 	for equipo in equipos:
+		if equipo == participante_atacante.get_equipo():
+			continue
+		for participante in equipo.get_participantes():
+			oponentes_validos.append(participante.get_piloto().get_gunpla())
+	return oponentes_validos
 
-		for i in range(PIOLOTOS_POR_EQUIPO):
-
-			participantes.append(Participante(parejas[i],equipo))
-
-	return participantes
-
-def determinar_oponentes(atacante,participantes):
-	"""
-	Recibe un atacante que es un participante que va a atacar,
-	una lista con todos los participantes,
-	y devuelve una lista con los gunplas de sus oponentes
-	"""
-
-	oponentes = []
-
-	for participante in participantes:
-
-		gunpla_participante = participante.get_piloto().get_gunpla()
-		
-		if atacante.get_equipo()!=participante.get_equipo():
-			oponentes.append(gunpla_participante)
-
-	return oponentes
-
-def ordenar_pilotos(pilotos):
+def ordenar_pilotos(participantes):
 	'''
-	Recibe una lista de tuplas de la forma <numero de piloto,piloto> y devuelve 
-	una lista de los pilotos ordenados segun la velocidad de sus gunplas.
+	Recibe una lista de participantes y los ordena segun la velocidad de sus gunplas.
 	'''
 
-	pilotos.sort(key = lambda piloto: piloto[1].get_gunpla().get_velocidad(), reverse = True)
+	participantes.sort(key = lambda participante: participante.get_piloto().get_gunpla().get_velocidad(), reverse = True)
 
 
-def inicializar_turnos(pilotos):
+def inicializar_turnos(participantes):
 	'''
-	Recibe una lista de pilotos ordenados segun la velocidad de sus gunplas y devuelve una cola 
+	Recibe una lista de participantes ordenados segun la velocidad de sus gunplas y devuelve una cola 
 	de "turnos" donde el primer turno corresponde al gunpla mas rapido y el ultimo al mas lento.
 	'''
 	cola_turnos = Cola()
 
-	for piloto in pilotos:
-		cola_turnos.encolar(piloto)
+	for participante in participantes:
+		cola_turnos.encolar(participante)
 
 	return cola_turnos
 
@@ -281,16 +260,23 @@ def actualizar_armas(armas_usadas):
 
 def main():
 
-	pilotos = generar_pilotos()
+	equipos = generar_equipos()
+	
+	participantes = []
+	
+	for equipo in equipos:
+		for participante in equipo.get_participantes():
+			participantes.append(participante)
 
 	#print(pilotos)#Debug
 
 	partes = generar_partes()
 	esqueletos = generar_esqueletos()
 	elegir_esqueletos(pilotos,esqueletos)
+
 	reservadas = elegir_partes(partes,pilotos)
 	equipar_gunplas(reservadas)
-	participantes = generar_participantes(pilotos)
+	participantes = generar_equipos(pilotos)
 	ordenar_pilotos(pilotos)
 
 	#print(ordenados)#Debug
