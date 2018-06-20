@@ -2,6 +2,7 @@ from clases import *
 from Pila import *
 from Cola import *
 from piloto import *
+from equipos import *
 
 CANTIDAD_ESQUELETOS = 10
 CANTIDAD_PARTES = 20
