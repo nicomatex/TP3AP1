@@ -1,3 +1,5 @@
+import random
+
 NOMBRES_EQUIPO = ("Abomyzation","Ansatsu","Banshee","Bloodbane","Collapse","Cyberstein","Darkness","Defussion","Extermination","Flamecaster")
 
 class Equipo:
@@ -14,14 +16,12 @@ class Equipo:
 		
 	def get_participantes_vivos(self):
 		'''Devuelve una lista con los participantes que siguen vivos'''
+
 		participantes_vivos = []
 
 		for participante in self.participantes:
-
-			if participante.get_piloto().get_gunpla().get_energia_restante()<=0:
-				continue
-
-			participantes_vivos.append(participante)
+			if participante.get_piloto().get_gunpla().get_energia_restante()>0:
+				participantes_vivos.append(participante)
 		return participantes_vivos
 
 	def get_participantes(self):
