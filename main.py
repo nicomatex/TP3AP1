@@ -299,7 +299,7 @@ def determinar_gunplas_activos(equipos):
 
 def ciclo_juego(equipos,turnos,participantes):
 	'''
-	Recibe una lista de equipos, una cola de turnos y una lista de participantes.
+	Recibe una lista de equipos, una cola de turnos y una lista de participantes. Es el ciclo principal del juego.
 	'''
 
 	equipos_vivos = determinar_equipos_vivos(equipos)
