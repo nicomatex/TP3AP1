@@ -146,9 +146,25 @@ def equipar_gunplas(partes_reservadas):
 def generar_equipos(pilotos):
 	'''
 	Recibe una lista de tuplas de la forma <numero de piloto,piloto> y
-	devuelve un una lista con los equipos seleccionados
+	devuelve un una lista con los equipos generados
 	'''
-	pass
+	parejas=[[] for _ in range(CANTIDAD_EQUIPOS)]
+	pilotos_desordenados=random.shuffle(pilotos)
+	indice_pareja = 0
+	equipos=[]
+	
+	for _,piloto in pilotos_desordenados:
+
+		parejas[indice_equipo].append(piloto)
+
+		if len(parejas[indice_equipo])==PIOLOTOS_POR_EQUIPO:
+			indice_pareja+=1
+
+	for pareja in parejas:
+
+		equipos.append(Equipo(pareja))
+
+	return equipos
 
 def ordenar_pilotos(pilotos):
 	'''
