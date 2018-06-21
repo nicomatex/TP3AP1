@@ -342,9 +342,7 @@ def ciclo_juego(equipos,turnos,participantes):
 			turnos.encolar(participante_atacante)
 			continue
 
-		#DEBUG
-		if arma_elegida in armas_usadas:
-			print("Arma invalida")
+
 
 		#Se establece el tiempo de recarga del arma
 		arma_elegida.usar()
