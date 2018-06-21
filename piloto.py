@@ -120,8 +120,9 @@ class Piloto:
 
 			return arma
 
-		#Decide si el oponente tiene menos escudo o armadura.
-		if (oponente.get_escudo()<oponente.get_armadura() or not any(armas_fisicas)) and any(armas_laser):
+		#Decide si el oponente va a recibir mas danio fisico o mas danio laser.
+
+		if (oponente.get_escudo()<oponente.get_armadura()/200 or not any(armas_fisicas)) and any(armas_laser):
 			arma_elegida=armas_laser[0]
 
 			for arma in armas_laser:
