@@ -15,7 +15,7 @@
 
 \sectionfont{\clearpage}
 
-\title{Trabajo pr\'actico Nº 3. Simulador de combates de Gunplas.}
+\title{Trabajo pr\'actico Nº 3. Simulador de batallas de Gunplas.}
 \author{Nicol\'as Federico Aguerre\\Padr\'on 102145
 		\and
 		Juan Pablo Di Como\\Padr\'on 102155}
@@ -36,5 +36,46 @@
 	Corrector: Ayel\'en Bibiloni Lombardi
 
 	\section{Introducci\'on}
-		
+		El objetivo del presente trabajo pr\'actico es implementar un simulador de combate del estilo de New Gundam Breaker, as\'i como 
+		tambi\'en una inteligencia artificial capaz de participar en la simulaci\'on, actuando de "jugador", ambos implementados en Python.
+
+	\section{Dise'no del simulador}
+		En primer lugar, teniendo en cuenta la interfaz minima provista en las consignas del trabajo, se dise'nan las clases basicas de tal forma que cumplan la interfaz pedida.
+		La estructura decidida para manejar de forma adecuada los pilotos y gunplas participantes en cada combate se basa en una divisi'on por equipos, siguiendo la siguiente l'ogica:
+
+		\begin{itemize}
+			\item Cada piloto tiene asociado un 'unico gunpla. 
+			\item A su vez, cada piloto es representado por un objeto $Participante$ dentro del simulador.
+			\item Los participantes estan agrupados dentro de $Equipos$, teniendo cada equipo exactamente la misma 
+			cantidad $n$ de participantes.
+		\end{itemize}
+
+		La organizaci'on mencionada se implementa utilizando clases y objetos, debido a que se decidi'o que esta era la estructura 
+		que aportaba mayor legibilidad y facilidad de mantenimiento al c'odigo del programa.\\
+		\par
+		Otro punto importante en el dise'no del programa es que todos los valores asociados al funcionamiento(Es decir, la cantidad de pilotos, cantidad de equipos, y rangos entre los cuales pueden variar los $stats$ de los gunpla) pudieran ser modificados
+		de forma simple, sin necesidad de alterar el c'odigo, lo cual aporta una mayor din'amica al c'odigo. Los par'ametros mencionados 
+		se ubican en la cabecera de cada uno de los archivos que componen al proyecto en forma de constantes.\\
+		\par
+
+		El ciclo de funcionamiento del programa se estructura de la siguiente forma:
+
+		\begin{enumerate}
+			\item Se generan los equipos con sus respectivos participantes. 
+			\item Se generan las partes que se van a utilizar para configurar a los gunplas (esqueletos, partes, armas).
+			\item Se inicia el ciclo de seleccion de partes por parte de los pilotos, dividido en 2 etapas:
+			\begin{enumerate}
+				\item Se les ofrecen a los pilotos ciertas partes disponibles para reservar, de a una por vez, hasta que ya no hay mas partes que reservar.
+				\item Los pilotos eligen, de entre todas las partes reservadas, aquellas que desean conservar.
+			\end{enumerate}
+			\item Se equipan los gunplas asociados a cada piloto con las partes reservadas por estos.
+			\item Se ordenan (Segun lo especificado por las consignas) los participantes en una cola de turnos seg'un la velocidad
+			de sus gunplas.
+			\item Se inicializa el ciclo de juego(Ver detalle del ciclo de juego mas adelante.)
+		\end{enumerate}
+
+		Para organizar las partes en el paso $2$, se utiliza un diccionario de la forma \{tipo de parte: pila con partes\} que tiene por claves 
+		cadenas que representan tipos de parte, y por valores, pilas de partes de este mismo tipo. Esto permite que cada piloto, cuando es su turno de reservar partes, pueda elegir exactamente de a una parte de cada tipo (las que se encuentran en el tope de cada pila). Para organizar los esqueletos se utiliza simplemente una lista, debido a que m'ultiples pilotos pueden elegir el mismo esqueleto. 
+		Adem'as, para guardar las partes reservadas por cada piloto, se utiliza un diccionario de la forma \{piloto:partes reservadas\}
+		que tiene por claves a cada piloto, y por valores a la lista de partes reservadas por ese piloto. A pesar de que los pilotos son objetos, y por tanto mutables, es posible utilizarlos como claves en el diccionario debido a que , por defecto, python guarda como claves las direcciones de memoria de los objetos, convirtiendo estas claves en inmutables.o
 \end{document}
