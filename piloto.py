@@ -14,6 +14,7 @@ class Piloto:
 		'''
 		self.gunpla = None
 		self.tipo_partes_elegidas = []
+		self.partes_reservadas = {}
 
 	def set_gunpla(self,gunpla):
 		'''
@@ -41,10 +42,14 @@ class Piloto:
 		'''
 		parte_elegida = list(partes.keys())[0]
 
-		for parte in partes:
+		for tipo_parte in partes:
+			if not self.partes_reservadas.get(tipo_parte,False):
+				self.partes_reservadas[tipo_parte] = partes[tipo_parte]
+				return tipo_parte
 
-			if partes[parte].get_energia() > partes[parte_elegida].get_energia():
-				parte_elegida = parte
+		for tipo_parte in partes:
+			if partes[tipo_parte].get_energia()>self.partes_reservadas[tipo_parte].get_energia():
+				return tipo_parte
 
 		return parte_elegida
 
@@ -55,7 +60,8 @@ class Piloto:
 		partes_elegidas = []
 
 		for parte in partes_reservadas:
-			if parte.get_tipo_parte() not in [p.get_tipo_parte() for p in partes_elegidas]:
+			if parte in self.partes_reservadas.values():
+
 				partes_elegidas.append(parte)
 
 		return partes_elegidas
