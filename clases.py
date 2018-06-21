@@ -197,7 +197,7 @@ class Gunpla:
 
 		if tipo_municion=="LASER":
 
-			daño_recibido = daño- daño*self.escudo #Calculo de reduccion de daño.
+			daño_recibido = daño- daño*(self.escudo/100) #Calculo de reduccion de daño.
 
 			if daño_recibido<0:
 				return 0
