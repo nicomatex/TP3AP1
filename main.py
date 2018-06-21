@@ -2,6 +2,8 @@ from clases import *
 from Pila import *
 from Cola import *
 from piloto import *
+from piloto_random import *
+
 
 CANTIDAD_ESQUELETOS = 10
 CANTIDAD_PARTES = 20
@@ -64,9 +66,14 @@ def generar_pilotos():
 	esa cantidad de pilotos.
 	'''
 	lista_pilotos = []
+	piloto_random = Piloto_random()
+	piloto_piola = Piloto()
 
-	for i in range(0,CANTIDAD_PILOTOS):
-		lista_pilotos.append((i,Piloto()))
+	lista_pilotos.append((1,piloto_random))
+	lista_pilotos.append((2,piloto_piola))
+
+	#for i in range(0,CANTIDAD_PILOTOS):
+	#	lista_pilotos.append((i,Piloto()))
 
 	return lista_pilotos
 
