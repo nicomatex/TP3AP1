@@ -187,17 +187,21 @@ class Gunpla:
 
 			daño_recibido = daño-self.armadura #Calculo de reduccion de daño.
 
-			self.energia_restante-=daño_recibido
+			
 			if daño_recibido<0:
 				return 0
+
+			self.energia_restante-=daño_recibido
 			return daño_recibido
 
 		if tipo_municion=="LASER":
 
 			daño_recibido = daño- daño*self.escudo #Calculo de reduccion de daño.
-			self.energia_restante-=daño_recibido
+
 			if daño_recibido<0:
 				return 0
+			
+			self.energia_restante-=daño_recibido
 			return daño_recibido
 
 class Arma:
