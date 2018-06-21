@@ -77,5 +77,43 @@
 		Para organizar las partes en el paso $2$, se utiliza un diccionario de la forma \{tipo de parte: pila con partes\} que tiene por claves 
 		cadenas que representan tipos de parte, y por valores, pilas de partes de este mismo tipo. Esto permite que cada piloto, cuando es su turno de reservar partes, pueda elegir exactamente de a una parte de cada tipo (las que se encuentran en el tope de cada pila). Para organizar los esqueletos se utiliza simplemente una lista, debido a que m'ultiples pilotos pueden elegir el mismo esqueleto. 
 		Adem'as, para guardar las partes reservadas por cada piloto, se utiliza un diccionario de la forma \{piloto:partes reservadas\}
-		que tiene por claves a cada piloto, y por valores a la lista de partes reservadas por ese piloto. A pesar de que los pilotos son objetos, y por tanto mutables, es posible utilizarlos como claves en el diccionario debido a que , por defecto, python guarda como claves las direcciones de memoria de los objetos, convirtiendo estas claves en inmutables.o
+		que tiene por claves a cada piloto, y por valores a la lista de partes reservadas por ese piloto. A pesar de que los pilotos son objetos, y por tanto mutables, es posible utilizarlos como claves en el diccionario debido a que , por defecto, python guarda como claves las direcciones de memoria de los objetos, convirtiendo estas claves en inmutables. Por ultimo, para ordenar y almacenar los turnos, se utiliza una cola implementada con nodos, que contiene $participantes ordenados$ inicialmente por la velocidad de sus gunplas.
+
+		\subsection{Ciclo de juego}
+		Antes de comenzar el ciclo de juego, se definen listas para almacenar los equipos que siguen activos y los gunplas que siguen vivos dentro de la batalla, para luego ir actualizando dichas listas a medida que los pilotos vayan quedando eliminados. Se declara adem'as una lista para contener todas las armas utilizadas, con el fin de facilitar luego la actualizaci'on de sus tiempos de recarga. A partir de esto, el ciclo de juego est'a organizado de la siguiente forma: Mientras que todav'ia queden dos o mas equipos con gunplas activos:
+		\\
+		\begin{enumerate}
+			\item Se desencola el siguiente turno.
+			\item Se actualiza el tiempo de recarga de las armas (Inicialmente, no hay armas en recarga).
+			\item Se determinan cuales son los oponentes v'alidos (todos aquellos gunplas que esten vivos y no pertenezcan al mismo 
+			equipo que el atacante.)
+			\item Se le da al piloto la lista de oponentes posibles para que este seleccione a cual desea atacar.
+			\item El piloto elige el arma que desea atacar al oponente elegido(y se agrega este arma a la lista de armas en recarga).
+			\item Se calcula el da'no que ha de causar el gunpla atacante (con la respectiva probabilidad de combinacion segun el tipo de arma).
+			\item Se le causa al gunpla oponente el da'no correspondiente (considerando las ecuaciones de reducci'on de da'no).
+			\item Se verifica si el oponente fue eliminado, y de ser asi, si se trat'o de un overkill, caso en el cual se encola 
+			un turno adicional del atacante.
+			\begin{enumerate}
+				\item En caso de que no sea eliminado el gunpla oponente y el arma con el cual fue realizado el ataque sea de tipo Mele,
+				se le da al oponente la posibilidad de realizar un contraataque simple (sin posibilidad de combinar ataques.)
+				\item En caso de que el oponente gunpla haya recibido da'no cero (ya sea por evasi'on del mismo , o por reducci'on), se
+				encola un turno adicional del oponente.
+			\end{enumerate}
+			\item Se determina nuevamente la cantidad de equipos con gunplas activos(removiendo aquellos que hayan perdido a su ultimo gunpla en el corriente turno).
+			\item Se encola un turno del atacante actual.
+		\end{enumerate}
+		Una vez finalizado el ciclo de combate, se determina cual es el unico equipo en pie y se lo da por ganador.
+
+		\section{Dise'no del piloto}
+		\subsection{Elecci'on del esqueleto}
+		Para la elecci'on del esqueleto, el criterio elegido es la energ'ia. La implementaci'on de dicho criterio es, en primer lugar, ordenar la lista de esqueletos ofrecida en forma decreciente seg'un la energ'ia de los mismos, y luego se elige el primer elemento de la lista.
+		\subsection{Elecci'on de partes}
+		En primer lugar, elige al menos una parte de cada tipo. Una vez elegidas al menos una de cada tipo, si se le siguen ofreciendo partes, reemplaza las elegidas por aquellas del mismo tipo que tengan mas energ'ia. Adem'as, guarda la mejor parte de cada tipo elegida en un diccionario de la forma \{tipo parte:parte\}
+		\subsection{Confirmaci'on de partes}
+		Simplemente se selecciona de la lista de partes reservadas aquellas contenidas como valores en el diccionario de las mejores partes reservadas, asegur'andose as'i de que el gunpla tenga al menos una parte de cada tipo de las elegidas.
+		\subsection{Selecci'on del oponente}
+		El criterio para la selecci'on del oponente es simplemente aquel que tiene menos energ'ia. Esto se logra recorriendo la lista de oponentes de forma lineal, y guardando aquel que tenga menor energ'ia de todos.
+		\subsection{Selecci'on del arma}
+		Como primera acci'on, se determina cuales son las armas disponibles para atacar (aquellas que no est'an en recarga), y se las divide en tres listas seg'un su tipo de munici'on: Hadr'on, laser o f'isica. Luego, se revisa si esta disponible algun arma de tipo Hadr'on, debido a que para estas no existe reducci'on de da'no, y de entre estas se elige la que tiene mayor da'no. En caso de que no se tengan armas de hadron, se decide si el oponente ser'a capaz de reducir mas el da'no f'isico o el da'no laser, y en base a eso se selecciona el arma con mas da'no de cada categor'ia. En caso de que no se tenga un arma laser, se devuelve el arma f'isica con mas da'no, y viceversa: En caso de que no se tenga ning'un arma f'isica, se devuelve la mejor arma laser. \\
+		Para decidir si el oponente ser'a capaz de reducir mas da'no f'isico o laser, se compara el escudo del oponente con la armadura del oponente dividida por un factor de conversi'on (ya que la armadura y el escudo no necesariamente son comparables en una misma escala.)
 \end{document}
