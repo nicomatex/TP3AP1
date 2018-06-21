@@ -328,7 +328,7 @@ def ciclo_juego(equipos,turnos,participantes):
 		indice_oponente_elegido = atacante.elegir_oponente(oponentes_posibles)
 		gunpla_oponente_elegido = oponentes_posibles[indice_oponente_elegido]
 
-		#Se busca a que participante pertenece el gunpla elegido.
+		#Se busca a que participante pertenece el oponente gunpla elegido.
 		for participante in participantes:
 			if participante.get_piloto().get_gunpla()==gunpla_oponente_elegido:
 				participante_oponente = participante
