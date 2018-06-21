@@ -94,7 +94,7 @@ def elegir_esqueletos(participantes,esqueletos):
 		#Se instancia un nuevo gunpla con el esqueleto elegido.
 		piloto.set_gunpla(Gunpla(esqueletos[indice_esqueleto_elegido]))
 
-def elegir_partes(partes,participantes):
+def elegir_partes(pila_partes,participantes):
 	'''
 	Recibe un diccionario partes de la forma <tipo_parte:pila con partes de ese tipo> y una lista de 
 	tuplas de la forma <numero de piloto,piloto>
@@ -102,6 +102,7 @@ def elegir_partes(partes,participantes):
 	{(numero de piloto, piloto):[Lista de partes reservadas por el piloto]}
 	'''
 	pilotos = []
+	
 
 	for participante in participantes:
 		pilotos.append(participante.get_piloto())
@@ -112,23 +113,25 @@ def elegir_partes(partes,participantes):
 	piloto_eligiendo = 0
 
 	while True:
-
+		partes = {}
 		todas_vacias = True
 
-		for tipo_parte in partes:
-			if not partes[tipo_parte].esta_vacia():
+		for tipo_parte in pila_partes:
+			if not pila_partes[tipo_parte].esta_vacia():
 				todas_vacias = False
+				partes[tipo_parte] = pila_partes[tipo_parte].ver_tope()
 
 		#Condicion de corte: Que esten todas las pilas vacias.
 		if todas_vacias:
 			break
 
+
 		elector = pilotos[piloto_eligiendo]
 		tipo_parte_elegida = elector.elegir_parte(partes)
-		partes_reservadas[elector].append(partes[tipo_parte_elegida].desapilar())
+		partes_reservadas[elector].append(pila_partes[tipo_parte_elegida].desapilar())
 
-		if partes[tipo_parte_elegida].esta_vacia():
-			partes.pop(tipo_parte_elegida)
+		if pila_partes[tipo_parte_elegida].esta_vacia():
+			pila_partes.pop(tipo_parte_elegida)
 
 		piloto_eligiendo+=1
 
