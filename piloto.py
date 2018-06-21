@@ -1,6 +1,7 @@
 TIPO_MUNICION_LASER = "LASER"
 TIPO_MUNICION_FISICA = "FISICA"
 TIPO_MUNICION_HADRON = "HADRON"
+FACTOR_ARMADURA_ESCUDO = 200
 
 class Piloto:
 	'''
@@ -42,7 +43,7 @@ class Piloto:
 
 		for parte in partes:
 
-			if partes[parte].ver_tope().get_energia() > partes[parte_elegida].ver_tope().get_energia():
+			if partes[parte].get_energia() > partes[parte_elegida].get_energia():
 				parte_elegida = parte
 
 		return parte_elegida
@@ -120,8 +121,9 @@ class Piloto:
 
 			return arma
 
-		#Decide si el oponente tiene menos escudo o armadura.
-		if (oponente.get_escudo()<oponente.get_armadura() or not any(armas_fisicas)) and any(armas_laser):
+		#Decide si el oponente va a recibir mas danio fisico o mas danio laser.
+
+		if (oponente.get_escudo()<oponente.get_armadura()/FACTOR_ARMADURA_ESCUDO or not any(armas_fisicas)) and any(armas_laser):
 			arma_elegida=armas_laser[0]
 
 			for arma in armas_laser:

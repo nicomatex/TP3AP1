@@ -1,14 +1,14 @@
 import random
 
 RANGO_ARMA_PESO = (2,10)
-RANGO_ARMA_ARMADURA = (-5,20)
-RANGO_ARMA_ESCUDO = (-4,10)
+RANGO_ARMA_ARMADURA = (-5,400)
+RANGO_ARMA_ESCUDO = (0,10)
 RANGO_ARMA_VELOCIDAD = (-4,10)
 RANGO_ARMA_ENERGIA = (-4,10)
 RANGO_ARMA_DAÑO = (5,20)
 RANGO_ARMA_HITS = (1,3)
 RANGO_ARMA_PRECISION = (30,90)
-RANGO_ARMA_TIEMPO_RECARGA = (2,4)
+RANGO_ARMA_TIEMPO_RECARGA = (2,2)
 
 RANGO_ESQUELETO_VELOCIDAD = (-4,10)
 RANGO_ESQUELETO_ENERGIA = (0,50)
@@ -16,8 +16,8 @@ RANGO_ESQUELETO_MOVILIDAD = (100,200)
 ESQUELETO_SLOTS = 20
 
 RANGO_PARTE_PESO = (1,10)
-RANGO_PARTE_ARMADURA = (-4,10)
-RANGO_PARTE_ESCUDO = (-2,10)
+RANGO_PARTE_ARMADURA = (-100,5000)
+RANGO_PARTE_ESCUDO = (0,50)
 RANGO_PARTE_VELOCIDAD = (-2,10)
 RANGO_PARTE_ENERGIA = (2,20)
 RANGO_PARTE_SLOTS = (2,4)
@@ -177,6 +177,7 @@ class Gunpla:
 		correspondiente segun la reduccion que corresponda.
 		'''
 		if random.random() < (self.get_movilidad()*PROBABILIDAD_ESQUIVAR)/100:
+
 			return 0
 
 		if tipo_municion=="HADRON":
@@ -186,18 +187,23 @@ class Gunpla:
 		if tipo_municion=="FISICA":
 
 			daño_recibido = daño-self.armadura #Calculo de reduccion de daño.
-
-			self.energia_restante-=daño_recibido
+			
 			if daño_recibido<0:
 				return 0
+
+			self.energia_restante-=daño_recibido
+			
 			return daño_recibido
 
 		if tipo_municion=="LASER":
 
 			daño_recibido = daño- daño*self.escudo #Calculo de reduccion de daño.
-			self.energia_restante-=daño_recibido
+
 			if daño_recibido<0:
 				return 0
+
+			self.energia_restante-=daño_recibido
+
 			return daño_recibido
 
 class Arma:
