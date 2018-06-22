@@ -3,6 +3,9 @@ from Pila import *
 from Cola import *
 from piloto import *
 from equipos import *
+import time
+
+TIEMPO_PRINTS = 1
 
 CANTIDAD_ESQUELETOS = 10
 CANTIDAD_PARTES = 30
@@ -78,6 +81,21 @@ def generar_equipos():
 
 		equipos.append(equipo)
 	return equipos
+
+def determinar_participantes(equipos):
+	'''Recibe una lista con equipos y devuelve una lista con todos los participantes'''
+
+	participantes = []
+	nombres_ocupados = []
+
+	for equipo in equipos:
+		for participante in equipo.get_participantes():
+
+			participante.asignar_nombre(nombres_ocupados)
+			nombres_ocupados.append(participante.get_nombre())
+			participantes.append(participante)
+
+	return participantes
 
 def elegir_esqueletos(participantes,esqueletos):
 	'''
@@ -310,15 +328,25 @@ def ciclo_juego(equipos,turnos,participantes):
 
 	armas_usadas = [] #Lista para almacenar las armas que estan en su tiempo de recarga.
 
+	turno = 0
+
 	while len(determinar_equipos_vivos(equipos))>=2:
 
+		turno += 1
+
 		participante_atacante = turnos.desencolar()
+		
+		nombre_atacante = participante_atacante.get_nombre()
 
 		atacante = participante_atacante.get_piloto()
-
 		#Se saltean los turnos pertenecientes a gunplas muertos.
 		if atacante.get_gunpla() not in gunplas_activos:
 			continue
+		
+		print("[~~~~~~~~~~~~~~{{{}}}~~~~~~~~~~~~~~]".format(turno))
+		time.sleep(TIEMPO_PRINTS)
+		print("Es el turno de {} del equipo {}".format(nombre_atacante,participante_atacante.get_equipo()))
+		time.sleep(TIEMPO_PRINTS)
 
 		#Se actualiza el tiempo recarga de las armas
 		actualizar_armas(armas_usadas)
@@ -334,15 +362,22 @@ def ciclo_juego(equipos,turnos,participantes):
 				participante_oponente = participante
 				break
 
+		nombre_oponente = participante_oponente.get_nombre()
+		equipo_oponente = participante_oponente.get_equipo().get_nombre()
+		participantes_oponentes = equipo_oponente.get_participantes()
+		
+		print("Va a atacar a {} del equipo {}".format(nombre_oponente,equipo_oponente))
+		time.sleep(TIEMPO_PRINTS)
 		#Se elige con que arma atacar
 		arma_elegida = atacante.elegir_arma(gunpla_oponente_elegido)
 
 		if not arma_elegida:
 			#reiniciar_armas(armas_usadas)
 			turnos.encolar(participante_atacante)
+			print("{} no tiene armas disponibles y pierde su turno...".format(nombre_atacante))
+			time.sleep(TIEMPO_PRINTS)
+
 			continue
-
-
 
 		#Se establece el tiempo de recarga del arma
 		arma_elegida.usar()
@@ -351,18 +386,30 @@ def ciclo_juego(equipos,turnos,participantes):
 		#Se calcula el daño y el daño efectivo 
 		daño = calcular_daño(arma_elegida,atacante,gunpla_oponente_elegido,armas_usadas)
 		daño_efectivo = gunpla_oponente_elegido.recibir_daño(daño,arma_elegida.get_tipo_municion())
+		print("{} ataca a {} con {} y causa {} puntos de daño".format(nombre_atacante,nombre_oponente,arma_elegida.get_clase(),daño))
+		time.sleep(TIEMPO_PRINTS)
 
 		if daño_efectivo==0:
 			turnos.encolar(participante_oponente)
+			print("Daño efectivo!")
+			time.sleep(TIEMPO_PRINTS)
 
 		if gunpla_oponente_elegido.get_energia_restante()<=0:
+			print("{} fue eliminado".format(nombre_oponente))
+			time.sleep(TIEMPO_PRINTS)
+
 			gunplas_activos = determinar_gunplas_activos(equipos)
 			equipos_vivos = determinar_equipos_vivos(equipos)
 
 
 			if daño_efectivo > gunpla_oponente_elegido.get_energia()*FACTOR_TURNO_BONUS/100:
 				turnos.encolar(participante_atacante)
+				print("¡¡¡OVERKILL!!! {} recibe un turno adicional".format(nombre_atacante))
+				time.sleep(TIEMPO_PRINTS)
 
+			print("Al equipo {} le quedan {} participantes vivos".format(equipo_oponente,len(participantes_oponentes)))
+			time.sleep(TIEMPO_PRINTS)
+	
 			turnos.encolar(participante_atacante)
 			continue
 
@@ -374,6 +421,8 @@ def ciclo_juego(equipos,turnos,participantes):
 
 
 			if not arma_contraataque: #Comprobacion de arma disponible para contraatacar.
+				print("{} no tiene armas para contraatacar")
+				time.sleep(TIEMPO_PRINTS)
 				turnos.encolar(participante_atacante)
 				continue
 
@@ -381,6 +430,8 @@ def ciclo_juego(equipos,turnos,participantes):
 				arma_contraataque.usar()
 				daño_contraataque = calcular_daño(arma_contraataque,contraatacante,atacante.get_gunpla(),armas_usadas,True)
 				daño_efectivo_contraataque = atacante.get_gunpla().recibir_daño(daño_contraataque,arma_contraataque.get_tipo_municion())
+				print("{} contraataca, causando {} de daño".format(nombre_oponente,daño_contraataque))
+				time.sleep(TIEMPO_PRINTS)
 
 		gunplas_activos = determinar_gunplas_activos(equipos)
 
@@ -389,13 +440,7 @@ def ciclo_juego(equipos,turnos,participantes):
 def main():
 
 	equipos = generar_equipos()
-	
-	participantes = []
-	
-	for equipo in equipos:
-		for participante in equipo.get_participantes():
-			participantes.append(participante)
-
+	participantes = determinar_participantes()
 	partes = generar_partes()
 	esqueletos = generar_esqueletos()
 	elegir_esqueletos(participantes,esqueletos)
