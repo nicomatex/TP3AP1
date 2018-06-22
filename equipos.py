@@ -1,7 +1,7 @@
 import random
 
 NOMBRES_EQUIPO = ("Abomyzation","Ansatsu","Banshee","Bloodbane","Collapse","Cyberstein","Darkness","Defussion","Extermination","Flamecaster")
-
+NOMBRES_PARTICIPANTE = ("Carlos","Esteban","Pedro","Gaston","Arya","Mirta","Teresa","Marta","Roberto","Marcelo","Nico","Juampi")
 class Equipo:
 	'''
 	Representa un equipo de participantes que tiene un nombre 
@@ -53,7 +53,7 @@ class Participante:
 		'''Recibe un objeto participante y un objeto equipo'''
 		self.piloto = piloto
 		self.equipo = equipo
-
+		self.nombre = ""
 	def get_piloto(self):
 		'''
 		Devuelve el piloto al cual representa el participante.
@@ -64,3 +64,14 @@ class Participante:
 		'''Devuelve el equipo del participante'''
 
 		return self.equipo
+
+	def asignar_nombre(self,nombres_ocupados):
+		'''Le asigna un nombre al participante'''
+
+		nombres_disponibles = [nombre for nombre in NOMBRES_PARTICIPANTE if nombre not in nombres_ocupados]
+		self.nombre=random.choice(NOMBRES_PARTICIPANTE)
+		return self.nombre
+
+	def get_nombre(self):
+		''' Devuelve el nombre del participante'''
+		return self.nombre
