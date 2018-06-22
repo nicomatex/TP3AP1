@@ -5,7 +5,7 @@ from piloto import *
 from equipos import *
 import time
 
-TIEMPO_PRINTS = 1
+TIEMPO_PRINTS = 0
 
 CANTIDAD_ESQUELETOS = 10
 CANTIDAD_PARTES = 30
@@ -343,9 +343,9 @@ def ciclo_juego(equipos,turnos,participantes):
 		if atacante.get_gunpla() not in gunplas_activos:
 			continue
 		
-		print("[~~~~~~~~~~~~~~{{{}}}~~~~~~~~~~~~~~]".format(turno))
+		print("[~~~~~~~~~~~~~~~~~~~~~~{{{}}}~~~~~~~~~~~~~~~~~~~~~~]".format(turno))
 		time.sleep(TIEMPO_PRINTS)
-		print("Es el turno de {} del equipo {}".format(nombre_atacante,participante_atacante.get_equipo()))
+		print("Es el turno de {} del equipo {}".format(nombre_atacante,participante_atacante.get_equipo().get_nombre()))
 		time.sleep(TIEMPO_PRINTS)
 
 		#Se actualiza el tiempo recarga de las armas
@@ -364,7 +364,7 @@ def ciclo_juego(equipos,turnos,participantes):
 
 		nombre_oponente = participante_oponente.get_nombre()
 		equipo_oponente = participante_oponente.get_equipo().get_nombre()
-		participantes_oponentes = equipo_oponente.get_participantes()
+		participantes_vivos = participante_oponente.get_equipo().get_participantes_vivos()
 		
 		print("Va a atacar a {} del equipo {}".format(nombre_oponente,equipo_oponente))
 		time.sleep(TIEMPO_PRINTS)
@@ -391,8 +391,6 @@ def ciclo_juego(equipos,turnos,participantes):
 
 		if daño_efectivo==0:
 			turnos.encolar(participante_oponente)
-			print("Daño efectivo!")
-			time.sleep(TIEMPO_PRINTS)
 
 		if gunpla_oponente_elegido.get_energia_restante()<=0:
 			print("{} fue eliminado".format(nombre_oponente))
@@ -400,6 +398,7 @@ def ciclo_juego(equipos,turnos,participantes):
 
 			gunplas_activos = determinar_gunplas_activos(equipos)
 			equipos_vivos = determinar_equipos_vivos(equipos)
+			participantes_vivos = participante_oponente.get_equipo().get_participantes_vivos()
 
 
 			if daño_efectivo > gunpla_oponente_elegido.get_energia()*FACTOR_TURNO_BONUS/100:
@@ -407,9 +406,8 @@ def ciclo_juego(equipos,turnos,participantes):
 				print("¡¡¡OVERKILL!!! {} recibe un turno adicional".format(nombre_atacante))
 				time.sleep(TIEMPO_PRINTS)
 
-			print("Al equipo {} le quedan {} participantes vivos".format(equipo_oponente,len(participantes_oponentes)))
-			time.sleep(TIEMPO_PRINTS)
-	
+			print("Al equipo {} le quedan {} participantes vivos".format(equipo_oponente,len(participantes_vivos)))	
+
 			turnos.encolar(participante_atacante)
 			continue
 
@@ -440,7 +438,7 @@ def ciclo_juego(equipos,turnos,participantes):
 def main():
 
 	equipos = generar_equipos()
-	participantes = determinar_participantes()
+	participantes = determinar_participantes(equipos)
 	partes = generar_partes()
 	esqueletos = generar_esqueletos()
 	elegir_esqueletos(participantes,esqueletos)
@@ -450,6 +448,8 @@ def main():
 	turnos = inicializar_turnos(participantes)
 
 	ciclo_juego(equipos,turnos,participantes)
+	print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	print()
 	print("El equipo ganador es {}".format(determinar_equipos_vivos(equipos)[0].get_nombre()))
 
 main()
