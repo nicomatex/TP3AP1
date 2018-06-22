@@ -332,8 +332,6 @@ def ciclo_juego(equipos,turnos,participantes):
 
 	while len(determinar_equipos_vivos(equipos))>=2:
 
-		turno += 1
-
 		participante_atacante = turnos.desencolar()
 		
 		nombre_atacante = participante_atacante.get_nombre()
@@ -342,6 +340,8 @@ def ciclo_juego(equipos,turnos,participantes):
 		#Se saltean los turnos pertenecientes a gunplas muertos.
 		if atacante.get_gunpla() not in gunplas_activos:
 			continue
+
+		turno += 1
 		
 		print("[~~~~~~~~~~~~~~~~~~~~~~{{{}}}~~~~~~~~~~~~~~~~~~~~~~]".format(turno))
 		time.sleep(TIEMPO_PRINTS)
