@@ -3,7 +3,6 @@ import random
 RANGO_ARMA_PESO = (2,10)
 RANGO_ARMA_ARMADURA = (-5,400)
 RANGO_ARMA_ESCUDO = (0,10)
-RANGO_ARMA_VELOCIDAD = (-4,10)
 RANGO_ARMA_ENERGIA = (-4,10)
 RANGO_ARMA_DAÑO = (5,20)
 RANGO_ARMA_HITS = (1,3)
@@ -149,7 +148,6 @@ class Gunpla:
 			self.energia_restante+= arma.get_energia()
 			self.peso+= arma.get_peso()
 			self.escudo+= arma.get_escudo()
-			self.velocidad+= arma.get_velocidad()
 
 	def attach_arma(self,arma):
 		'''
@@ -163,7 +161,6 @@ class Gunpla:
 		self.energia_restante+= arma.get_energia()
 		self.peso+= arma.get_peso()
 		self.escudo+= arma.get_escudo()
-		self.velocidad+= arma.get_velocidad()
 
 	def get_cantidad_slots(self):
 		'''
@@ -199,9 +196,6 @@ class Gunpla:
 
 			daño_recibido = daño- daño*(self.escudo/100) #Calculo de reduccion de daño.
 
-			if daño_recibido<0:
-				return 0
-
 			self.energia_restante-=daño_recibido
 
 			return daño_recibido
@@ -217,7 +211,6 @@ class Arma:
 		self.peso = random.randint(RANGO_ARMA_PESO[0],RANGO_ARMA_PESO[1])
 		self.armadura = random.randint(RANGO_ARMA_ARMADURA[0],RANGO_ARMA_ARMADURA[1])
 		self.escudo = random.randint(RANGO_ARMA_ESCUDO[0],RANGO_ARMA_ESCUDO[1])
-		self.velocidad = random.randint(RANGO_ARMA_VELOCIDAD[0],RANGO_ARMA_VELOCIDAD[1])
 		self.energia = random.randint(RANGO_ARMA_ENERGIA[0],RANGO_ARMA_ENERGIA[1])
 		self.tipo_municion = random.choice(TIPOS_MUNICION)
 		self.tipo = random.choice(TIPOS_ARMA)
@@ -247,12 +240,6 @@ class Arma:
 		Devuelve el escudo del arma.
 		'''
 		return self.escudo
-
-	def get_velocidad(self):
-		'''
-		Devuelve la velocidad del arma.
-		'''
-		return self.velocidad
 
 	def get_energia(self):
 		'''
