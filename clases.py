@@ -199,9 +199,6 @@ class Gunpla:
 
 			daño_recibido = daño- daño*(self.escudo/100) #Calculo de reduccion de daño.
 
-			if daño_recibido<0:
-				return 0
-
 			self.energia_restante-=daño_recibido
 
 			return daño_recibido
