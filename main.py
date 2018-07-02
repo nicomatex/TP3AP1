@@ -459,6 +459,7 @@ def ciclo_juego(equipos,turnos,participantes):
 
 			if not contraatacar(participante_oponente,atacante,armas_usadas): #Comprobacion de arma disponible para contraatacar.
 				turnos.encolar(participante_atacante)
+				gunplas_activos = determinar_gunplas_activos(equipos)
 				continue
 
 
