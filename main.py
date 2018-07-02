@@ -306,8 +306,20 @@ def determinar_gunplas_activos(equipos):
 
 	return gunplas_activos
 
-def contraatacar(nombre_oponente,contraatacante,arma_contraataque):
-	'''Recibe un participante oponente, su nombre y una cola de turnos'''
+def contraatacar(participante_oponente,atacante,armas_usadas):
+	'''
+	Recibe un participante oponente, el atacante y una lista de armas usadas 
+	devuelve False si el oponente no tiene arams para contraataar, en caso contrario
+	contraataca y devuelve True
+	'''
+	contraatacante = participante_oponente.get_piloto()
+	arma_contraataque = contraatacante.elegir_arma(atacante.get_gunpla())
+	nombre_oponente = participante_oponente.get_nombre()
+
+	if not arma_contraataque:
+		print("{} no tiene armas para contraatacar".format(nombre_oponente))
+		time.sleep(TIEMPO_PRINTS)
+		return False
 
 	arma_contraataque.usar()
 	daño_contraataque = calcular_daño(arma_contraataque,contraatacante,atacante.get_gunpla(),armas_usadas,True)
@@ -315,6 +327,7 @@ def contraatacar(nombre_oponente,contraatacante,arma_contraataque):
 	print("{} contraataca, causando {} de daño".format(nombre_oponente,daño_contraataque))
 	time.sleep(TIEMPO_PRINTS)
 
+	return True
 
 def ciclo_juego(equipos,turnos,participantes):
 	'''
@@ -412,17 +425,10 @@ def ciclo_juego(equipos,turnos,participantes):
 		#Se calcula el contraataque.
 		if arma_elegida.get_tipo()==TIPO_ARMA_MELEE:
 
-			contraatacante = participante_oponente.get_piloto()
-			arma_contraataque = contraatacante.elegir_arma(atacante.get_gunpla())
-			
-			if not arma_contraataque: #Comprobacion de arma disponible para contraatacar.
-				print("{} no tiene armas para contraatacar")
-				time.sleep(TIEMPO_PRINTS)
+			if not contraatacar(participante_oponente,atacante,armas_usadas): #Comprobacion de arma disponible para contraatacar.
 				turnos.encolar(participante_atacante)
 				continue
 
-			else:
-				contraatacar(nombre_oponente,contraatacante,arma_contraataque)
 
 		gunplas_activos = determinar_gunplas_activos(equipos)
 
