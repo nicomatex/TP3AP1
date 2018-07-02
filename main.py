@@ -306,6 +306,52 @@ def determinar_gunplas_activos(equipos):
 
 	return gunplas_activos
 
+def elegir_oponente(participante_atacante,participantes,equipos):
+		'''
+		Recibe un participante atacante, una lista de participantes y una lista de equipos, y devuelve el gunpla oponente elegido, 
+		el nombre del piloto, el equipo al que pertenece y el objeto participante correspondiente al piloto.
+		'''
+
+		oponentes_posibles = determinar_oponentes_validos(participante_atacante,equipos)
+		atacante = participante_atacante.get_piloto()
+		
+		indice_oponente_elegido = atacante.elegir_oponente(oponentes_posibles)
+		gunpla_oponente_elegido = oponentes_posibles[indice_oponente_elegido]
+
+		#Se busca a que participante pertenece el oponente gunpla elegido.
+		for participante in participantes:
+			if participante.get_piloto().get_gunpla()==gunpla_oponente_elegido:
+				participante_oponente = participante
+				break
+
+		nombre_oponente = participante_oponente.get_nombre()
+		equipo_oponente = participante_oponente.get_equipo().get_nombre()
+		
+		return gunpla_oponente_elegido, nombre_oponente, equipo_oponente,participante_oponente
+
+def eliminar_gunpla(equipos,participante_oponente,daño_efectivo,gunpla_oponente_elegido,nombre_atacante):
+	'''
+	Recibe una lista de equipos, el objeto participante oponente, el daño efectivo realizado, el objeto gunpla del oponente, y el nombre del atacante. Devuelve
+	la lista actualizada de gunplas activos, de equipos vivos, de participantes vivos, y un booleano overkill.
+	'''
+	overkill= False
+
+	nombre_oponente = participante_oponente.get_nombre()
+
+	print("{} fue eliminado".format(nombre_oponente))
+	time.sleep(TIEMPO_PRINTS)
+
+	gunplas_activos = determinar_gunplas_activos(equipos)
+	equipos_vivos = determinar_equipos_vivos(equipos)
+	participantes_vivos = participante_oponente.get_equipo().get_participantes_vivos()
+
+
+	if daño_efectivo > gunpla_oponente_elegido.get_energia()*FACTOR_TURNO_BONUS/100:
+		overkill = True
+		print("¡¡¡OVERKILL!!! {} recibe un turno adicional".format(nombre_atacante))
+		time.sleep(TIEMPO_PRINTS)
+
+	return gunplas_activos,equipos_vivos,participantes_vivos,overkill
 
 def ciclo_juego(equipos,turnos,participantes):
 	'''
@@ -340,19 +386,8 @@ def ciclo_juego(equipos,turnos,participantes):
 		#Se actualiza el tiempo recarga de las armas
 		actualizar_armas(armas_usadas)
 
-		oponentes_posibles = determinar_oponentes_validos(participante_atacante,equipos)
-
-		indice_oponente_elegido = atacante.elegir_oponente(oponentes_posibles)
-		gunpla_oponente_elegido = oponentes_posibles[indice_oponente_elegido]
-
-		#Se busca a que participante pertenece el oponente gunpla elegido.
-		for participante in participantes:
-			if participante.get_piloto().get_gunpla()==gunpla_oponente_elegido:
-				participante_oponente = participante
-				break
-
-		nombre_oponente = participante_oponente.get_nombre()
-		equipo_oponente = participante_oponente.get_equipo().get_nombre()
+		gunpla_oponente_elegido, nombre_oponente, equipo_oponente,participante_oponente = elegir_oponente(participante_atacante,participantes,equipos)
+		
 		participantes_vivos = participante_oponente.get_equipo().get_participantes_vivos()
 		
 		print("Va a atacar a {} del equipo {}".format(nombre_oponente,equipo_oponente))
@@ -385,15 +420,10 @@ def ciclo_juego(equipos,turnos,participantes):
 			print("{} fue eliminado".format(nombre_oponente))
 			time.sleep(TIEMPO_PRINTS)
 
-			gunplas_activos = determinar_gunplas_activos(equipos)
-			equipos_vivos = determinar_equipos_vivos(equipos)
-			participantes_vivos = participante_oponente.get_equipo().get_participantes_vivos()
+			gunplas_activos,equipos_vivos,participantes_vivos,overkill = eliminar_gunpla(equipos,participante_oponente,daño_efectivo,gunpla_oponente_elegido,nombre_atacante)
 
-
-			if daño_efectivo > gunpla_oponente_elegido.get_energia()*FACTOR_TURNO_BONUS/100:
+			if overkill:
 				turnos.encolar(participante_atacante)
-				print("¡¡¡OVERKILL!!! {} recibe un turno adicional".format(nombre_atacante))
-				time.sleep(TIEMPO_PRINTS)
 
 			print("Al equipo {} le quedan {} participantes vivos".format(equipo_oponente,len(participantes_vivos)))	
 
