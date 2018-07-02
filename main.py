@@ -232,23 +232,12 @@ def calcular_daño(arma,piloto,oponente,armas_usadas,contraataque=False):
 		if contraataque:
 			continue
 
+		tipo = arma.get_tipo()
 
 		#Calculo de combinacion de armas.
-		if arma.get_tipo()==TIPO_ARMA_MELEE:
+		if tipo==TIPO_ARMA_MELEE or tipo==TIPO_ARMA_RANGO:
 
-			if random.random() < PROBABILIDAD_COMBINACION_MELEE/100:
-				arma_elegida = piloto.elegir_arma(oponente,True,arma)
-
-				if not arma_elegida:
-					daño_total+=0
-				else:
-					arma_elegida.usar()
-					armas_usadas.append(arma_elegida)
-					daño_total+= calcular_daño(arma_elegida,piloto,oponente,armas_usadas)
-
-		elif arma.get_tipo()==TIPO_ARMA_RANGO:
-
-			if random.random() < PROBABILIDAD_COMBINACION_RANGO/100:
+			if random.random() < (PROBABILIDAD_COMBINACION_MELEE if tipo==TIPO_ARMA_MELEE else PROBABILIDAD_COMBINACION_RANGO)/100:
 				arma_elegida = piloto.elegir_arma(oponente,True,arma)
 
 				if not arma_elegida:
