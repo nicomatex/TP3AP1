@@ -306,6 +306,15 @@ def determinar_gunplas_activos(equipos):
 
 	return gunplas_activos
 
+def contraatacar(nombre_oponente,contraatacante,arma_contraataque):
+	'''Recibe un participante oponente, su nombre y una cola de turnos'''
+
+	arma_contraataque.usar()
+	daño_contraataque = calcular_daño(arma_contraataque,contraatacante,atacante.get_gunpla(),armas_usadas,True)
+	daño_efectivo_contraataque = atacante.get_gunpla().recibir_daño(daño_contraataque,arma_contraataque.get_tipo_municion())
+	print("{} contraataca, causando {} de daño".format(nombre_oponente,daño_contraataque))
+	time.sleep(TIEMPO_PRINTS)
+
 
 def ciclo_juego(equipos,turnos,participantes):
 	'''
@@ -405,8 +414,7 @@ def ciclo_juego(equipos,turnos,participantes):
 
 			contraatacante = participante_oponente.get_piloto()
 			arma_contraataque = contraatacante.elegir_arma(atacante.get_gunpla())
-
-
+			
 			if not arma_contraataque: #Comprobacion de arma disponible para contraatacar.
 				print("{} no tiene armas para contraatacar")
 				time.sleep(TIEMPO_PRINTS)
@@ -414,11 +422,7 @@ def ciclo_juego(equipos,turnos,participantes):
 				continue
 
 			else:
-				arma_contraataque.usar()
-				daño_contraataque = calcular_daño(arma_contraataque,contraatacante,atacante.get_gunpla(),armas_usadas,True)
-				daño_efectivo_contraataque = atacante.get_gunpla().recibir_daño(daño_contraataque,arma_contraataque.get_tipo_municion())
-				print("{} contraataca, causando {} de daño".format(nombre_oponente,daño_contraataque))
-				time.sleep(TIEMPO_PRINTS)
+				contraatacar(nombre_oponente,contraatacante,arma_contraataque)
 
 		gunplas_activos = determinar_gunplas_activos(equipos)
 
